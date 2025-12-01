@@ -7,57 +7,79 @@ import mivs.liturgicalcalendar.data.DatabaseSeeder
 import mivs.liturgicalcalendar.data.db.AppDatabase
 import mivs.liturgicalcalendar.domain.logic.LiturgicalCalendarCalc
 import mivs.liturgicalcalendar.domain.model.LiturgicalDay
-import mivs.liturgicalcalendar.ui.common.LiturgicalToEventMapper
+import mivs.liturgicalcalendar.domain.model.LiturgicalSeason
 import java.time.LocalDate
 
-class CalendarRepository(private val context: Context) {
+class CalendarRepository(context: Context) {
 
     private val db = AppDatabase.getDatabase(context)
     private val dao = db.dayDao()
+    private val fixedDao = db.fixedFeastDao() // Nowe DAO
 
-    // Tę funkcję wywołujemy przy starcie aplikacji (w ViewModelu)
     suspend fun initializeData() = withContext(Dispatchers.IO) {
-        val seeder = DatabaseSeeder(dao)
+        // Przekazujemy oba DAO do Seedera
+        val seeder = DatabaseSeeder(dao, fixedDao)
         seeder.seedDatabase()
     }
 
-    // Klasa modelu czytań
+    // --- CZYTANIA ---
     data class DayReadings(
         val gospelSigla: String,
-        val psalmResponse: String
+        val psalmResponse: String,
+        val dbFeastName: String? = null
     )
 
-    // Pobieramy czytania z BAZY DANYCH
     suspend fun getReadingsForDay(dayInfo: LiturgicalDay): DayReadings = withContext(Dispatchers.IO) {
-        val entity = dao.getDay(dayInfo.date)
-
-        if (entity != null) {
+        // 1. Najpierw szukamy w Legacy (Rok 2025 - pełne dane)
+        val entity2025 = dao.getDay(dayInfo.date)
+        if (entity2025 != null) {
             return@withContext DayReadings(
-                gospelSigla = entity.gospelSigla,
-                psalmResponse = entity.psalmResponse
+                gospelSigla = entity2025.gospelSigla,
+                psalmResponse = entity2025.psalmResponse,
+                dbFeastName = entity2025.feastName
             )
-        } else {
-            return@withContext DayReadings("Brak danych w bazie", "Brak danych")
         }
+
+        // 2. Jeśli nie ma w Legacy (np. rok 2026), sprawdzamy czy to Święto Stałe
+        val fixedFeast = fixedDao.getFeast(dayInfo.date.monthValue, dayInfo.date.dayOfMonth)
+        if (fixedFeast != null) {
+            return@withContext DayReadings(
+                gospelSigla = "Patrz lekcjonarz", // Nie mamy czytań na 2026 w bazie
+                psalmResponse = "Patrz lekcjonarz",
+                dbFeastName = fixedFeast.feastName
+            )
+        }
+
+        return@withContext DayReadings("Brak danych", "Brak danych")
     }
 
-    // Pobieramy dni do kalendarza (Ikony)
+    // --- KALENDARZ (Ikony) ---
     suspend fun getDaysForMonth(year: Int, month: Int): List<LiturgicalDay> = withContext(Dispatchers.IO) {
         val days = mutableListOf<LiturgicalDay>()
         val start = LocalDate.of(year, month, 1)
         val len = start.lengthOfMonth()
 
-        for(i in 0 until len) {
+        for (i in 0 until len) {
             val date = start.plusDays(i.toLong())
 
-            // 1. Algorytm liczy strukturę (Adwent, Niedziela itp.)
+            // 1. Baza: Algorytm (Ruchome)
             var day = LiturgicalCalendarCalc.generateDay(date)
 
-            // 2. (OPCJONALNIE) Nadpisujemy nazwę święta nazwą z bazy danych
-            // Dzięki temu będziesz miał dokładne nazwy ze starej apki, np. "Św. Jana Bosko"
-            val entity = dao.getDay(date)
-            if (entity != null) {
-                day = day.copy(feastName = entity.feastName)
+            // 2. Nakładka: Święta Stałe (z nowej tabeli) - dla lat innych niż 2025
+            // Jeśli to 2026+, sprawdzamy fixed_feasts
+            val fixedFeast = fixedDao.getFeast(date.monthValue, date.dayOfMonth)
+            if (fixedFeast != null) {
+                // Prosta logika: Stałe święta nadpisują zwykłe dni
+                if (day.feastName == null || fixedFeast.rank >= 3) {
+                    day = day.copy(feastName = fixedFeast.feastName)
+                    // TODO: Tu w przyszłości dodasz mapowanie koloru ze stringa "w" na Enum Season
+                }
+            }
+
+            // 3. Nakładka: Legacy 2025 (Najwyższy priorytet dla obecnego roku)
+            val legacyEntity = dao.getDay(date)
+            if (legacyEntity != null) {
+                day = day.copy(feastName = legacyEntity.feastName)
             }
 
             days.add(day)

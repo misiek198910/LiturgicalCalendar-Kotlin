@@ -1,27 +1,35 @@
 package mivs.liturgicalcalendar.data
 
 import mivs.liturgicalcalendar.data.dao.DayDao
+import mivs.liturgicalcalendar.data.dao.FixedFeastDao
 import mivs.liturgicalcalendar.data.entity.DayEntity
 import java.time.LocalDate
 
-class DatabaseSeeder(private val dao: DayDao) {
+// ZMIANA: Dodaliśmy 'fixedFeastDao' do konstruktora
+class DatabaseSeeder(
+    private val dayDao: DayDao,
+    private val fixedFeastDao: FixedFeastDao
+) {
 
     suspend fun seedDatabase() {
-        // 1. Sprawdzamy, czy baza jest pusta. Jeśli nie, to znaczy że już zaimportowaliśmy.
-        val count = dao.getCount()
-        if (count > 0) return
+        // Uruchamiamy obie procedury importu
+        seedLegacyData()  // To wypełni tabelę na rok 2025 (DayEntity)
+        seedFixedFeasts() // To wypełni tabelę wieczną (FixedFeastEntity)
+    }
 
-        // 2. Pobieramy dane z Twojego pliku LegacyData2025
+    // --- LOGIKA DLA ROKU 2025 (Twoja stara logika) ---
+    private suspend fun seedLegacyData() {
+        // Jeśli tabela 2025 nie jest pusta, pomijamy
+        if (dayDao.getCount() > 0) return
+
         val events = LegacyData2025.events
         val colors = LegacyData2025.colors
         val gospels = LegacyData2025.gospels
         val psalms = LegacyData2025.psalms
 
-        // Zabezpieczenie: bierzemy najkrótszą listę, żeby nie wyjść poza zakres
         val size = minOf(events.size, colors.size, gospels.size, psalms.size)
-
         val daysToInsert = mutableListOf<DayEntity>()
-        var currentDate = LocalDate.of(2025, 1, 1) // Twoje dane w strings.xml zaczynają się od 1 Stycznia
+        var currentDate = LocalDate.of(2025, 1, 1)
 
         for (i in 0 until size) {
             val entity = DayEntity(
@@ -32,12 +40,20 @@ class DatabaseSeeder(private val dao: DayDao) {
                 psalmResponse = psalms[i]
             )
             daysToInsert.add(entity)
-
-            // Przesuwamy datę o 1 dzień
             currentDate = currentDate.plusDays(1)
         }
 
-        // 3. Zapisujemy wszystko do bazy
-        dao.insertAll(daysToInsert)
+        dayDao.insertAll(daysToInsert)
+    }
+
+    // --- LOGIKA DLA TABELI WIECZNEJ (Nowa) ---
+    private suspend fun seedFixedFeasts() {
+        // Jeśli tabela stała nie jest pusta, pomijamy
+        if (fixedFeastDao.getCount() > 0) return
+
+        // Pobieramy listę, którą utworzyliśmy w pliku FixedFeastsData.kt
+        val fixedList = FixedFeastsData.list
+
+        fixedFeastDao.insertAll(fixedList)
     }
 }

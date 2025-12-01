@@ -21,7 +21,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
 
     // Tworzymy ViewModel przy użyciu naszej Fabryki
     private val viewModel: CalendarViewModel by viewModels {
-        CalendarViewModelFactory(CalendarRepository())
+        CalendarViewModelFactory(repository = CalendarRepository(requireContext()))
     }
 
     private lateinit var calendarView: CalendarView
@@ -60,7 +60,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
     }
 
     private fun setupObservers() {
-        // Obserwujemy strumień ikon (kropki/obrazki w kalendarzu)
+        // 1. Obserwujemy strumień ikon (kropki/obrazki w kalendarzu)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect { events ->
@@ -69,16 +69,26 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
             }
         }
 
-        // Obserwujemy SZCZEGÓŁY DNIA (Dzień + Czytania)
+        // 2. Obserwujemy SZCZEGÓŁY DNIA (Dzień + Czytania)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     // state to obiekt CalendarUiState (lub null)
                     state?.let { uiState ->
-                        // 1. Aktualizujemy nagłówki (Data, Święto, Sezon)
-                        updateDetails(uiState.day)
 
-                        // 2. Aktualizujemy Czytania (z pola readings)
+                        // --- POPRAWKA LOGIKI NAZW ---
+                        // Sprawdzamy: czy w bazie (readings) jest nazwa święta?
+                        // Jeśli tak -> użyj jej. Jeśli nie -> użyj tej z algorytmu.
+                        val finalFeastName = uiState.readings.dbFeastName ?: uiState.day.feastName
+
+                        // Tworzymy kopię dnia z poprawną nazwą, żeby przekazać do metody wyświetlającej
+                        val dayToDisplay = uiState.day.copy(feastName = finalFeastName)
+
+                        // Aktualizujemy nagłówki (Data, Święto, Sezon)
+                        updateDetails(dayToDisplay)
+
+                        // --- POPRAWKA TEKSTU ---
+                        // Używamy zmiennych lokalnych (gospelText, psalmText), a nie 'binding'
                         gospelText.text = "Ewangelia: ${uiState.readings.gospelSigla}"
                         psalmText.text = "Psalm: ${uiState.readings.psalmResponse}"
                     }

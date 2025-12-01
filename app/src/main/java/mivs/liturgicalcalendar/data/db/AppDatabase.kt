@@ -6,12 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import mivs.liturgicalcalendar.data.dao.DayDao
+import mivs.liturgicalcalendar.data.dao.FixedFeastDao
 import mivs.liturgicalcalendar.data.entity.DayEntity
+import mivs.liturgicalcalendar.data.entity.FixedFeastEntity // <--- TEGO BRAKOWAŁO (Import)
 
-@Database(entities = [DayEntity::class], version = 1, exportSchema = false)
+// <--- TEGO BRAKOWAŁO W LINIJCE NIŻEJ (Dodanie do entities)
+@Database(entities = [DayEntity::class, FixedFeastEntity::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dayDao(): DayDao
+    abstract fun fixedFeastDao(): FixedFeastDao
 
     companion object {
         @Volatile
@@ -23,7 +27,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "liturgical_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

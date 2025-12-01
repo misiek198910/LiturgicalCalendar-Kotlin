@@ -13,6 +13,9 @@ object LiturgicalCalendarCalc {
         val year = date.year
         val easter = EasterCalculator.calculate(year)
 
+        // ZMIENNA NA KLUCZ (Dla bazy danych)
+        var feastKey: String? = null
+
         // --- KOTWICE CZASOWE ---
         val ashWednesday = easter.minusDays(46)
         val pentecost = easter.plusWeeks(7)
@@ -27,10 +30,10 @@ object LiturgicalCalendarCalc {
 
         // Boże Narodzenie (uproszczone ramy)
         val epiphany = LocalDate.of(year, Month.JANUARY, 6)
-        val baptismOfLord = epiphany.plusDays((7 - epiphany.dayOfWeek.value % 7).toLong() + 1) // Niedziela po 6.01
+        val baptismOfLord = epiphany.plusDays((7 - epiphany.dayOfWeek.value % 7).toLong() + 1)
 
         if ((date.month == Month.DECEMBER && date.dayOfMonth >= 25) ||
-            (date.year == year && date.isBefore(baptismOfLord.plusDays(1)))) { // Do Chrztu Pańskiego
+            (date.year == year && date.isBefore(baptismOfLord.plusDays(1)))) {
             season = LiturgicalSeason.CHRISTMAS
         }
         else if (!date.isBefore(ashWednesday) && date.isBefore(easter)) {
@@ -43,23 +46,52 @@ object LiturgicalCalendarCalc {
             season = LiturgicalSeason.ADVENT
         }
 
-        // --- 2. DETEKCJA NAZW ŚWIĄT I NIEDZIEL ---
+        // --- 2. DETEKCJA NAZW ŚWIĄT I KLUCZY ---
         var feastName: String? = null
         var isSolemnity = false
 
-        // A. Sztywne daty (Święta ruchome główne)
-        if (date.isEqual(easter)) {
+        // A. Święta ruchome główne (Z PRZYPISANIEM KLUCZY)
+        if (date.isEqual(ashWednesday)) {
+            feastName = "Środa Popielcowa"
+            feastKey = "ASH_WEDNESDAY"
+        }
+        else if (date.isEqual(easter)) {
             feastName = "Niedziela Zmartwychwstania Pańskiego"
             isSolemnity = true
-        } else if (date.isEqual(ashWednesday)) {
-            feastName = "Środa Popielcowa"
-        } else if (date.isEqual(corpusChristi)) {
+            feastKey = "EASTER_SUNDAY"
+        }
+        else if (date.isEqual(easter.plusDays(1))) {
+            feastName = "Poniedziałek w oktawie Wielkanocy"
+            isSolemnity = true
+            feastKey = "EASTER_MONDAY"
+        }
+        else if (date.isEqual(corpusChristi)) {
             feastName = "Uroczystość Najświętszego Ciała i Krwi Chrystusa"
             isSolemnity = true
-        } else if (date.isEqual(pentecost)) {
+            feastKey = "CORPUS_CHRISTI"
+        }
+        else if (date.isEqual(pentecost)) {
             feastName = "Niedziela Zesłania Ducha Świętego"
             isSolemnity = true
-        } else if (date.month == Month.DECEMBER && date.dayOfMonth == 25) {
+            feastKey = "PENTECOST"
+        }
+        // Wielki Tydzień i inne ruchome
+        else if (date.isEqual(easter.minusDays(3))) {
+            feastKey = "HOLY_THURSDAY" // Wielki Czwartek
+        }
+        else if (date.isEqual(easter.minusDays(2))) {
+            feastKey = "GOOD_FRIDAY" // Wielki Piątek
+        }
+        else if (date.isEqual(easter.plusWeeks(1))) {
+            feastKey = "DIVINE_MERCY" // Niedziela Miłosierdzia
+        }
+        else if (date.isEqual(easter.minusWeeks(1))) {
+            feastName = "Niedziela Palmowa Męki Pańskiej"
+            feastKey = "PALM_SUNDAY"
+        }
+
+        // Święta stałe w algorytmie (dla nazw w widoku miesiąca)
+        else if (date.month == Month.DECEMBER && date.dayOfMonth == 25) {
             feastName = "Uroczystość Narodzenia Pańskiego"
             isSolemnity = true
         } else if (date.month == Month.JANUARY && date.dayOfMonth == 6) {
@@ -69,37 +101,26 @@ object LiturgicalCalendarCalc {
 
         // B. Logika dla NIEDZIEL (jeśli nazwa jeszcze nie została ustalona)
         if (feastName == null && date.dayOfWeek == DayOfWeek.SUNDAY) {
-            isSolemnity = true // Każda niedziela jest uroczystością
+            isSolemnity = true
 
             when (season) {
                 LiturgicalSeason.ADVENT -> {
-                    // Liczymy tygodnie od 1. Niedzieli Adwentu
                     val weekNum = ChronoUnit.WEEKS.between(firstAdvent, date).toInt() + 1
                     feastName = "$weekNum. Niedziela Adwentu"
                 }
                 LiturgicalSeason.LENT -> {
-                    // Liczymy tygodnie do Wielkanocy
                     val weeksBeforeEaster = ChronoUnit.WEEKS.between(date, easter).toInt()
-                    if (weeksBeforeEaster == 1) {
-                        feastName = "Niedziela Palmowa Męki Pańskiej"
-                    } else {
-                        // 1. niedziela postu jest 6 tyg przed Wielkanocą, 2. jest 5 tyg...
-                        val lentSundayNum = 7 - weeksBeforeEaster
-                        if (lentSundayNum in 1..5) {
-                            feastName = "$lentSundayNum. Niedziela Wielkiego Postu"
-                        }
+                    val lentSundayNum = 7 - weeksBeforeEaster
+                    if (lentSundayNum in 1..5) {
+                        feastName = "$lentSundayNum. Niedziela Wielkiego Postu"
                     }
                 }
                 LiturgicalSeason.EASTER -> {
-                    // Liczymy tygodnie po Wielkanocy
                     val weeksAfter = ChronoUnit.WEEKS.between(easter, date).toInt()
                     val easterSundayNum = weeksAfter + 1
-                    if (easterSundayNum == 2) feastName = "2. Niedziela Wielkanocna (Miłosierdzia Bożego)"
-                    else if (easterSundayNum in 3..7) feastName = "$easterSundayNum. Niedziela Wielkanocna"
+                    if (easterSundayNum in 3..7) feastName = "$easterSundayNum. Niedziela Wielkanocna"
                 }
                 LiturgicalSeason.ORDINARY_TIME -> {
-                    // Tu logika jest trudniejsza (zależna od Chrztu Pańskiego i Zesłania),
-                    // na razie zostawmy "Niedziela Zwykła" lub dodamy później numerację
                     feastName = "Niedziela Zwykła"
                 }
                 else -> {}
@@ -115,7 +136,8 @@ object LiturgicalCalendarCalc {
             feastName = feastName,
             isSolemnity = isSolemnity,
             sundayCycle = sundayCycle,
-            weekdayCycle = weekdayCycle
+            weekdayCycle = weekdayCycle,
+            feastKey = feastKey // <--- Przekazujemy klucz do modelu
         )
     }
 

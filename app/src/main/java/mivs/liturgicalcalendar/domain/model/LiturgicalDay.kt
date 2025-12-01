@@ -10,7 +10,8 @@ data class LiturgicalDay(
     val isSolemnity: Boolean = false, // Czy to Uroczystość? (ważne dla pierwszeństwa)
     val isFeast: Boolean = false, // Czy to Święto?
     val sundayCycle: CycleCalculator.SundayCycle,
-    val weekdayCycle: CycleCalculator.WeekdayCycle
+    val weekdayCycle: CycleCalculator.WeekdayCycle,
+    val feastKey: String? = null
 ) {
     // Pomocnicza flaga - czy dzień ma własną nazwę, czy jest "zwykły"
     val hasSpecialName: Boolean

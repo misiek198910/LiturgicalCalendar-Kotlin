@@ -9,5 +9,7 @@ data class FixedFeastEntity(
     val day: Int,        // np. 1
     val feastName: String, // "Wszystkich Świętych"
     val color: String,     // "w", "r", "v", "g"
-    val rank: Int          // 3=Uroczystość, 2=Święto, 1=Wspomnienie
+    val rank: Int,          // 3=Uroczystość, 2=Święto, 1=Wspomnienie
+    val gospelSigla: String,
+    val psalmResponse: String
 )

@@ -2,24 +2,23 @@ package mivs.liturgicalcalendar.data
 
 import mivs.liturgicalcalendar.data.dao.DayDao
 import mivs.liturgicalcalendar.data.dao.FixedFeastDao
+import mivs.liturgicalcalendar.data.dao.MovableFeastDao // Dodany import
 import mivs.liturgicalcalendar.data.entity.DayEntity
 import java.time.LocalDate
 
-// ZMIANA: Dodaliśmy 'fixedFeastDao' do konstruktora
 class DatabaseSeeder(
     private val dayDao: DayDao,
-    private val fixedFeastDao: FixedFeastDao
+    private val fixedFeastDao: FixedFeastDao,
+    private val movableFeastDao: MovableFeastDao // Dodany parametr
 ) {
 
     suspend fun seedDatabase() {
-        // Uruchamiamy obie procedury importu
-        seedLegacyData()  // To wypełni tabelę na rok 2025 (DayEntity)
-        seedFixedFeasts() // To wypełni tabelę wieczną (FixedFeastEntity)
+        seedLegacyData()  // Tabela 2025
+        seedFixedFeasts() // Tabela stała (wieczna)
+        seedMovableFeasts() // Tabela ruchoma (wieczna)
     }
 
-    // --- LOGIKA DLA ROKU 2025 (Twoja stara logika) ---
     private suspend fun seedLegacyData() {
-        // Jeśli tabela 2025 nie jest pusta, pomijamy
         if (dayDao.getCount() > 0) return
 
         val events = LegacyData2025.events
@@ -42,18 +41,18 @@ class DatabaseSeeder(
             daysToInsert.add(entity)
             currentDate = currentDate.plusDays(1)
         }
-
         dayDao.insertAll(daysToInsert)
     }
 
-    // --- LOGIKA DLA TABELI WIECZNEJ (Nowa) ---
     private suspend fun seedFixedFeasts() {
-        // Jeśli tabela stała nie jest pusta, pomijamy
         if (fixedFeastDao.getCount() > 0) return
-
-        // Pobieramy listę, którą utworzyliśmy w pliku FixedFeastsData.kt
         val fixedList = FixedFeastsData.list
-
         fixedFeastDao.insertAll(fixedList)
+    }
+
+    private suspend fun seedMovableFeasts() {
+        if (movableFeastDao.getCount() > 0) return
+        val movableList = MovableFeastsData.list
+        movableFeastDao.insertAll(movableList)
     }
 }

@@ -55,4 +55,5 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx) // Obsługa Coroutines/Flow
     kapt(libs.androidx.room.compiler)
+    implementation(libs.jsoup)
 }

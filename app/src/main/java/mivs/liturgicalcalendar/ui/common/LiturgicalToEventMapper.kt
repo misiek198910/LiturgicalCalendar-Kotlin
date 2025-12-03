@@ -9,28 +9,33 @@ import java.util.Calendar
 object LiturgicalToEventMapper {
 
     fun map(day: LiturgicalDay): EventDay {
-        // 1. Konwersja LocalDate (Java Time) -> Calendar (Stary format wymagany przez Applandeo)
         val calendar = Calendar.getInstance()
         calendar.set(day.date.year, day.date.monthValue - 1, day.date.dayOfMonth)
 
-        // 2. Dobór ikony na podstawie okresu liturgicznego
-        val iconRes = when (day.season) {
-            LiturgicalSeason.ADVENT -> {
-                // TODO: Tu można dodać logikę dla Niedzieli Gaudete (różowy)
-                R.drawable.priest_violet
+        // LOGIKA WYBORU KOLORU
+        // Priorytet 1: Kolor z bazy danych (jeśli istnieje)
+        val iconRes = if (day.colorCode != null) {
+            when (day.colorCode.lowercase()) {
+                "r" -> R.drawable.priest_red    // Czerwony (Męczennicy)
+                "w" -> R.drawable.priest_white  // Biały (Święci, Maryjne)
+                "v" -> R.drawable.priest_violet // Fiolet (Adwent/Post)
+                "p" -> R.drawable.priest_pink   // Różowy
+                "g" -> R.drawable.priest_green  // Zielony
+                else -> R.drawable.priest_green // Domyślny
             }
-            LiturgicalSeason.CHRISTMAS -> R.drawable.priest_white
-            LiturgicalSeason.LENT -> {
-                // TODO: Tu można dodać logikę dla Niedzieli Laetare (różowy)
-                R.drawable.priest_violet
+        } else {
+            // Priorytet 2: Kolor z algorytmu (Okres liturgiczny)
+            when (day.season) {
+                LiturgicalSeason.ADVENT -> R.drawable.priest_violet
+                LiturgicalSeason.CHRISTMAS -> R.drawable.priest_white
+                LiturgicalSeason.LENT -> R.drawable.priest_violet
+                LiturgicalSeason.TRIDUUM -> R.drawable.priest_red
+                LiturgicalSeason.EASTER -> R.drawable.priest_white
+                LiturgicalSeason.PENTECOST -> R.drawable.priest_red
+                LiturgicalSeason.ORDINARY_TIME -> R.drawable.priest_green
             }
-            LiturgicalSeason.TRIDUUM -> R.drawable.priest_white // Lub czerwony dla Piątku
-            LiturgicalSeason.EASTER -> R.drawable.priest_white
-            LiturgicalSeason.PENTECOST -> R.drawable.priest_red
-            LiturgicalSeason.ORDINARY_TIME -> R.drawable.priest_green
         }
 
-        // 3. Zwracamy obiekt gotowy dla widoku
         return EventDay(calendar, iconRes)
     }
 }

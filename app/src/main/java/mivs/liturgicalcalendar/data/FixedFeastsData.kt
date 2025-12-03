@@ -33,6 +33,10 @@ object FixedFeastsData {
 
         FixedFeastEntity(1, 31, "Św. Jana Bosko, prezbitera", "w", 1,
             "MK4,26–34", "Zbawienie prawych pochodzi od Pana"), // *Z dnia
+        FixedFeastEntity(1, 19, "Św. Józefa Sebastiana Pelczara, biskupa", "w", 1,
+            "Z dnia", "Z dnia"),
+        FixedFeastEntity(1, 26, "Świętych biskupów Tymoteusza i Tytusa", "w", 1,
+            "Z dnia", "Z dnia"),
 
         // --- LUTY ---
         FixedFeastEntity(2, 2, "Ofiarowanie Pańskie", "w", 2,
@@ -55,6 +59,8 @@ object FixedFeastsData {
 
         FixedFeastEntity(2, 22, "Katedry św. Piotra, Apostoła", "w", 2,
             "MT16,13–19", "Pan mym pasterzem, nie brak mi niczego"),
+        FixedFeastEntity(2, 23, "Św. Polikarpa, biskupa i męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
 
         // --- MARZEC ---
         FixedFeastEntity(3, 4, "Św. Kazimierza, patrona Polski", "w", 2,
@@ -65,6 +71,12 @@ object FixedFeastsData {
 
         FixedFeastEntity(3, 25, "Zwiastowanie Pańskie", "w", 3,
             "ŁK1,26–38", "Przychodzę, Boże pełnić Twoja wolę"),
+        FixedFeastEntity(5, 4, "Św. Floriana, męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
+        FixedFeastEntity(5, 18, "Św. Stanisława Papczyńskiego / Św. Jana I", "w", 1,
+            "Z dnia", "Z dnia"),
+        FixedFeastEntity(5, 25, "Św. Bedy Czcigodnego / Św. Grzegorza VII", "w", 1,
+            "Z dnia", "Z dnia"),
 
         // --- KWIECIEŃ ---
         FixedFeastEntity(4, 23, "Uroczystość św. Wojciecha, patrona Polski", "r", 3,
@@ -120,6 +132,17 @@ object FixedFeastsData {
         FixedFeastEntity(6, 29, "Świętych Apostołów Piotra i Pawła", "r", 3,
             "MT16,13–19", "Od wszelkiej trwogi Pan Bóg mnie wyzwolił"),
 
+        FixedFeastEntity(6, 1, "Św. Justyna, męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(6, 8, "Św. Jadwigi Królowej", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(6, 15, "Bł. Jolanty, zakonnicy", "w", 1,
+            "Z dnia", "Z dnia"),
+        FixedFeastEntity(6, 22, "Świętych męczenników Jana Fishera i Tomasza More", "r", 1,
+            "Z dnia", "Z dnia"),
+
         // --- LIPIEC ---
         FixedFeastEntity(7, 3, "Św. Tomasza Apostoła", "r", 2,
             "J20,24–29", "Całemu światu głoście Ewangelię"),
@@ -138,6 +161,15 @@ object FixedFeastsData {
 
         FixedFeastEntity(7, 26, "Świętych Joachima i Anny", "w", 1,
             "MT13,16-17", "Potomstwo prawych dozna błogosławieństwa"), // *Dobrane
+
+        FixedFeastEntity(7, 6, "Bł. Marii Teresy Ledóchowskiej, dziewicy", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(7, 13, "Świętych pustelników Andrzeja Świerada i Benedykta", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(7, 20, "Bł. Czesława, prezbitera", "w", 1, "Z dnia",
+            "Z dnia"),
 
         // --- SIERPIEŃ ---
         FixedFeastEntity(8, 6, "Przemienienie Pańskie", "w", 2,
@@ -161,6 +193,9 @@ object FixedFeastsData {
         FixedFeastEntity(8, 26, "NMP Częstochowskiej", "w", 3,
             "J2,1–11", "Tyś wielką chluba naszego narodu"),
 
+        FixedFeastEntity(8, 17, "Św. Jacka, prezbitera (Patrona polskiej prowincji dominikanów)", "w", 1,
+            "Z dnia", "Z dnia"),
+
         // --- WRZESIEŃ ---
         FixedFeastEntity(9, 8, "Narodzenie NMP", "w", 2,
             "MT1,1–16.18–23", "Raduj się, duszo, w Bogu, Zbawcy moim"),
@@ -179,6 +214,11 @@ object FixedFeastsData {
 
         FixedFeastEntity(9, 29, "Świętych Archaniołów Michała, Gabriela i Rafała", "w", 2,
             "J1,47–51", "Wobec aniołów psalm zaśpiewam Panu"),
+        FixedFeastEntity(9, 7, "Św. Melchiora Grodzieckiego, prezbitera i męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(9, 28, "Św. Wacława, męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
 
         // --- PAŹDZIERNIK ---
         FixedFeastEntity(10, 2, "Świętych Aniołów Stróżów", "w", 1,
@@ -198,6 +238,14 @@ object FixedFeastsData {
 
         FixedFeastEntity(10, 28, "Świętych Apostołów Szymona i Judy Tadeusza", "r", 2,
             "J15,17-27", "Po całej ziemi ich głos się rozchodzi"), // *Dobrane
+        FixedFeastEntity(10, 5, "Św. Faustyny Kowalskiej", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(10, 12, "Bł. Jana Beyzyma, prezbitera", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(10, 19, "Bł. Jerzego Popiełuszki, prezbitera i męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
 
         // --- LISTOPAD ---
         FixedFeastEntity(11, 1, "Wszystkich Świętych", "w", 3,
@@ -214,6 +262,11 @@ object FixedFeastsData {
 
         FixedFeastEntity(11, 30, "Św. Andrzeja Apostoła", "r", 2,
             "MT4,18-22", "Po całej ziemi ich głos się rozchodzi"),
+        FixedFeastEntity(11, 16, "Najświętszej Maryi Panny Ostrobramskiej, Matki Miłosierdzia", "w", 3,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(11, 23, "Św. Klemensa I, papieża i męczennika", "r", 1,
+            "Z dnia", "Z dnia"),
 
         // --- GRUDZIEŃ ---
         FixedFeastEntity(12, 6, "Św. Mikołaja, biskupa", "w", 1,
@@ -232,6 +285,21 @@ object FixedFeastsData {
             "J20,2–8", "Niech sprawiedliwi weselą się w Panu"),
 
         FixedFeastEntity(12, 28, "Świętych Młodzianków, męczenników", "r", 2,
-            "MT2,13–18", "Nasza dusza została wyzwolona jak ptak z sideł")
+            "MT2,13–18", "Nasza dusza została wyzwolona jak ptak z sideł"),
+        FixedFeastEntity(12, 7, "Św. Ambrożego, biskupa i doktora Kościoła", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(12, 14, "Św. Jana od Krzyża, prezbitera i doktora Kościoła", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(12, 21, "Św. Piotra Kanizjusza, prezbitera i doktora Kościoła", "w", 1,
+            "Z dnia", "Z dnia"),
+
+        FixedFeastEntity(1, 19, "Św. Józefa Sebastiana Pelczara, biskupa", "w", 1,
+            "J10,11–16", "Jesteś kapłanem, tak jak Melchizedek"),
+
+        FixedFeastEntity(1, 26, "Świętych biskupów Tymoteusza i Tytusa", "w", 1,
+            "ŁK10,1–9", "Po całej ziemi ich głos się rozchodzi"),
+
     )
 }

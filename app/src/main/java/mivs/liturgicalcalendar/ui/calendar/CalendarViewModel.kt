@@ -17,9 +17,9 @@ import java.util.Calendar
 class CalendarViewModel(private val repository: CalendarRepository) : ViewModel() {
 
     init {
-        // PRZY STARCIE: Sprawdź czy trzeba zaimportować dane do bazy
         viewModelScope.launch {
-            repository.initializeData()
+            repository.initializeData() // To odpali proces tworzenia bazy
+            repository.runScraper() // skraper dla czytań
         }
     }
 

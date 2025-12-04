@@ -16,12 +16,21 @@ import java.util.Calendar
 
 class CalendarViewModel(private val repository: CalendarRepository) : ViewModel() {
 
+    // --- DODAJEMY BLOK INIT TUTAJ ---
     init {
         viewModelScope.launch {
-            repository.initializeData() // To odpali proces tworzenia bazy
-            repository.runScraper() // skraper dla czytań
+            // 1. Najpierw upewniamy się, że struktura bazy (dni, święta stałe/ruchome) istnieje
+            repository.initializeData()
+
+            // 2. Następnie uruchamiamy scrapera, żeby pobrał brakujące teksty Ewangelii (dla Cykli A, B, C)
+            //repository.runScraper()
+
+
+            //4. pobiera teksty psalmów
+            //repository.runPsalmScraper()
         }
     }
+    // -------------------------------
 
     // --- CZĘŚĆ 1: Kalendarz (Ikony na kratkach) ---
     private val _events = MutableStateFlow<List<EventDay>>(emptyList())
@@ -44,7 +53,7 @@ class CalendarViewModel(private val repository: CalendarRepository) : ViewModel(
     // Jedna klasa stanu trzymająca komplet informacji
     data class CalendarUiState(
         val day: LiturgicalDay,
-        val readings: CalendarRepository.DayReadings // Upewnij się, że DayReadings jest dostępne w Repository
+        val readings: CalendarRepository.DayReadings
     )
 
     // Strumień stanu, który obserwuje Fragment
@@ -62,7 +71,7 @@ class CalendarViewModel(private val repository: CalendarRepository) : ViewModel(
             // 1. Obliczamy dane liturgiczne (np. "1. Niedziela Adwentu")
             val dayInfo = LiturgicalCalendarCalc.generateDay(date)
 
-            // 2. Pobieramy czytania (np. "Mt 24...")
+            // 2. Pobieramy czytania (z bazy lub internetu)
             val readings = repository.getReadingsForDay(dayInfo)
 
             // 3. Wysyłamy paczkę do widoku

@@ -8,5 +8,26 @@
     <string name="back">Wróć</string>
     <string name="settings">Ustawienia</string>
     <string name="sub">Subskrypcje</string>
+    <string name="ads_remove">Usuń reklamy</string>
+    <string name="Back">Wróć</string>
+    <string name="PrivacyPolicy">Polityka Prywatności</string>
+    <string name="subscription">Twoja Subskrypcja</string>
+    <string name="ads_of">Kliknij, aby usunąć reklamy i włączyć Słowo</string>
+    <string name="notification">Powiadomienia</string>
+    <string name="day_word">Codzienne Słowo</string>
+    <string name="patron">Patron dnia i Ewangelia</string>
+    <string name="notification_hour">Godzina powiadomienia</string>
+    <string name="seven_am">07:00</string>
+    <string name="about">O aplikacji</string>
+    <string name="loading">Ładowanie...</string>
+    <string name="status">Twój status:</string>
+    <string name="subs2">Subskrypcja Premium</string>
+    <string name="text_info1">Wesprzyj rozwój aplikacji i ciesz się dodatkowymi korzyściami:</string>
+    <string name="no_ads">Brak reklam</string>
+    <string name="buy_back">Przywróć zakupy</string>
+    <string name="text_info2">Kup subskrypcję (9,99 zł / miesiąc)</string>
+    <string name="premium_version">Wersja Premium</string>
+    <string name="read1">EWANGELIA (Czytaj)</string>
+    <string name="read2">PSALM (Czytaj)</string>
 
 </resources>

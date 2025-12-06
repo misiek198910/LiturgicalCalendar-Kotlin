@@ -61,7 +61,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="8dp"
-                    android:text="Wersja Premium"
+                    android:text="@string/premium_version"
                     android:textColor="@color/teal_200"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -100,7 +100,7 @@
                         android:id="@+id/gospelHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EWANGELIA (Czytaj)"
+                        android:text="@string/read1"
                         android:textColor="@color/teal_200"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -146,7 +146,7 @@
                         android:id="@+id/psalmHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PSALM (Czytaj)"
+                        android:text="@string/read2"
                         android:textColor="@color/teal_200"
                         android:textSize="14sp"
                         android:textStyle="bold" />

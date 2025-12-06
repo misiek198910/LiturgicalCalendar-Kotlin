@@ -20,7 +20,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Wróć"
+            android:contentDescription="@string/Back"
             app:tint="@color/teal_200"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:padding="12dp" />
@@ -28,10 +28,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Polityka Prywatności"
+            android:text="@string/PrivacyPolicy"
             android:textColor="@color/teal_200"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:paddingEnd="0dp"
             android:paddingStart="16dp"/>
     </LinearLayout>
 

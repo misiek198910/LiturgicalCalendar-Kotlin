@@ -396,9 +396,6 @@ object LectionaryMap {
         "EASTER_SUN_6_C" to "J14,23–29",
         "EASTER_SUN_7_C" to "J17,20–26"
     )
-
-
-    // 2. MAPA PSALMÓW (Wygenerowana z Twojego logu, wyczyszczona)
     val psalmMap = mapOf(
         "ORD_W1_TUE" to Pair("1 Sm 2,1.4-8", "Całym swym sercem raduję się w Panu"),
         "ORD_W1_WED" to Pair("Ps 40,2.5.7-10", "Przychodzę, Boże, pełnić Twoją wolę"),

@@ -14,5 +14,14 @@
     <color name="liturgical_white">#FFFFFF</color>
     <color name="liturgical_rose">#FF007F</color>
     <color name="liturgical_gold">#FFD700</color>
+    <color name="liturgical_purple">#B388FF</color>
+
+    <color name="button_dark_grey">#262626</color>
+    <color name="teal_ripple">#3303DAC5</color>
+    <color name="btn_grad_start">#3D3D3D</color>
+    <color name="btn_grad_end">#262626</color>
+    
+    <color name="gray_non_premium">#808080</color>
+    <color name="green_premium">#008000</color>
 
 </resources>

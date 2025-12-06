@@ -7,6 +7,8 @@ import com.applandeo.materialcalendarview.EventDay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import mivs.liturgicalcalendar.billing.SubscriptionManager // Importuj SubscriptionManager
+import mivs.liturgicalcalendar.billing.SubscriptionStatus
 import mivs.liturgicalcalendar.data.repository.CalendarRepository
 import mivs.liturgicalcalendar.domain.logic.LiturgicalCalendarCalc
 import mivs.liturgicalcalendar.domain.model.LiturgicalDay
@@ -14,49 +16,42 @@ import mivs.liturgicalcalendar.ui.common.LiturgicalToEventMapper
 import java.time.LocalDate
 import java.util.Calendar
 
-class CalendarViewModel(private val repository: CalendarRepository) : ViewModel() {
+class CalendarViewModel(
+    private val repository: CalendarRepository,
+    private val subscriptionManager: SubscriptionManager // Dodajemy manager subskrypcji
+) : ViewModel() {
 
-    // --- DODAJEMY BLOK INIT TUTAJ ---
-    init {
-        viewModelScope.launch {
-            // 1. Najpierw upewniamy się, że struktura bazy (dni, święta stałe/ruchome) istnieje
-            repository.initializeData()
-
-            // 2. Następnie uruchamiamy scrapera, żeby pobrał brakujące teksty Ewangelii (dla Cykli A, B, C)
-            //repository.runScraper()
-
-
-            //4. pobiera teksty psalmów
-            //repository.runPsalmScraper()
-        }
-    }
-    // -------------------------------
-
-    // --- CZĘŚĆ 1: Kalendarz (Ikony na kratkach) ---
     private val _events = MutableStateFlow<List<EventDay>>(emptyList())
     val events: StateFlow<List<EventDay>> = _events
+
+    // Stan subskrypcji (obserwowany przez Fragment)
+    private val _isPremium = MutableStateFlow(false)
+    val isPremium: StateFlow<Boolean> = _isPremium
+
+    init {
+        // Obserwujemy LiveData z SubscriptionManager i konwertujemy na StateFlow
+        subscriptionManager.subscriptionStatus.observeForever { status ->
+            _isPremium.value = (status == SubscriptionStatus.PREMIUM)
+        }
+    }
 
     fun loadMonthData(calendar: Calendar) {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
 
         viewModelScope.launch {
-            // Pobieramy dni w tle i mapujemy na ikony
             val days = repository.getDaysForMonth(year, month)
             val mappedEvents = days.map { LiturgicalToEventMapper.map(it) }
             _events.emit(mappedEvents)
         }
     }
 
-    // --- CZĘŚĆ 2: Szczegóły dnia (Panel na dole) ---
-
-    // Jedna klasa stanu trzymająca komplet informacji
+    // Szczegóły dnia
     data class CalendarUiState(
         val day: LiturgicalDay,
         val readings: CalendarRepository.DayReadings
     )
 
-    // Strumień stanu, który obserwuje Fragment
     private val _uiState = MutableStateFlow<CalendarUiState?>(null)
     val uiState: StateFlow<CalendarUiState?> = _uiState
 
@@ -68,24 +63,28 @@ class CalendarViewModel(private val repository: CalendarRepository) : ViewModel(
         )
 
         viewModelScope.launch {
-            // 1. Obliczamy dane liturgiczne (np. "1. Niedziela Adwentu")
             val dayInfo = LiturgicalCalendarCalc.generateDay(date)
-
-            // 2. Pobieramy czytania (z bazy lub internetu)
             val readings = repository.getReadingsForDay(dayInfo)
-
-            // 3. Wysyłamy paczkę do widoku
             _uiState.emit(CalendarUiState(dayInfo, readings))
+        }
+    }
+
+    // Metoda do wywołania zakupu
+    fun buyPremium(activity: android.app.Activity) {
+        subscriptionManager.productDetails.value?.let { details ->
+            subscriptionManager.billingManager.launchPurchaseFlow(activity, details)
         }
     }
 }
 
-// Fabryka (bez zmian)
-class CalendarViewModelFactory(private val repository: CalendarRepository) : ViewModelProvider.Factory {
+class CalendarViewModelFactory(
+    private val repository: CalendarRepository,
+    private val subscriptionManager: SubscriptionManager
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CalendarViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CalendarViewModel(repository) as T
+            return CalendarViewModel(repository, subscriptionManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

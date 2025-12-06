@@ -13,8 +13,11 @@ applandeo = "1.9.0-rc04"
 fragmentKtx = "1.6.2"
 lifecycle = "2.6.2"
 room = "2.6.1"
-ksp = "1.9.20-1.0.14"
 jsoup = "1.17.2"
+play_services_ads = "23.6.0"
+user_messaging_platform = "3.1.0"
+billing = "7.1.1"
+work-version = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +36,10 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "play_services_ads" }
+user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "user_messaging_platform" }
+billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-version" }
 
 
 [plugins]

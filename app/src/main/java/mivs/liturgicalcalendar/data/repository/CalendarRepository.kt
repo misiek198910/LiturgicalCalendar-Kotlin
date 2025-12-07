@@ -18,12 +18,11 @@ class CalendarRepository(context: Context) {
     private val gospelDao = db.gospelDao()
     private val psalmDao = db.psalmDao()
 
-    // ZMODYFIKOWANA KLASA Z PEŁNYMI DANYMI PSALMU
     data class DayReadings(
         val gospelSigla: String,
-        val psalmResponse: String, // SKRÓCONA LINIA (Refren + Sigla)
+        val psalmResponse: String,
         val psalmSigla: String? = null,
-        val psalmFullText: String? = null, // PEŁNA TREŚĆ
+        val psalmFullText: String? = null,
         val dbFeastName: String? = null,
         val gospelFullText: String? = null
     )
@@ -35,8 +34,8 @@ class CalendarRepository(context: Context) {
         var psalmFullContent: String? = null
         var feastName: String? = null
 
-        // 1. Święta Ruchome / 2. Święta Stałe (ustalenie początkowej sigli i refrenu)
-        // Jeśli znajdziemy wpis w bazie, używamy go jako punkt startowy
+        // Zmienna pomocnicza
+        var isPsalmFoundInFixed = false
 
         // --- SEKCJA 1 & 2: USTALENIE NAZWY ŚWIĘTA I PODSTAWOWEJ SYGLI/REFRENU ---
 
@@ -54,55 +53,84 @@ class CalendarRepository(context: Context) {
             val fixedFeast = fixedDao.getFeast(dayInfo.date.monthValue, dayInfo.date.dayOfMonth)
             if (fixedFeast != null) {
                 if (dayInfo.feastName == null || fixedFeast.rank >= 3) {
+
+                    // 1. Ewangelia
                     if (fixedFeast.gospelSigla != "Z dnia") sigla = fixedFeast.gospelSigla
-                    if (fixedFeast.psalmResponse != "Z dnia") {
+
+                    // 2. Psalm
+                    val specificPsalmSigla = fixedFeast.psalmSigla
+
+                    if (specificPsalmSigla != null && specificPsalmSigla != "Z dnia" && specificPsalmSigla.isNotBlank()) {
+                        val fullText = findSmartPsalmText(specificPsalmSigla)
+
+                        if (!fullText.isNullOrEmpty()) {
+                            psalmFullContent = fullText
+                            psalmDisplay = "Psalm: $specificPsalmSigla, Ref: ${fixedFeast.psalmResponse}"
+                            psalmLookupSigla = specificPsalmSigla
+                            isPsalmFoundInFixed = true
+                        } else {
+                            // --- DEBUG MODE: BRAK TEKSTU W BAZIE ---
+                            psalmDisplay = "Psalm: $specificPsalmSigla (BRAK W BAZIE)"
+                            psalmFullContent = "⚠️ BRAK PSALMU W BAZIE DLA: $specificPsalmSigla\nRefren: ${fixedFeast.psalmResponse}"
+                            isPsalmFoundInFixed = true
+                        }
+                    } else if (fixedFeast.psalmResponse != "Z dnia") {
                         psalmDisplay = "Psalm: ${fixedFeast.psalmResponse}"
                         psalmFullContent = "Refren: ${fixedFeast.psalmResponse}"
                     }
+
                     feastName = fixedFeast.feastName
                 }
             }
         }
 
-        // --- SEKCJA 3: UŻYCIE MAPY LEKCJONARZA DO ZNALEZIENIA PEŁNEGO TEKSTU PSALMU ---
+        // --- SEKCJA 3: UŻYCIE MAPY LEKCJONARZA ---
 
-        if (dayInfo.lectionaryKey != null && (sigla == "Patrz lekcjonarz" || sigla == "Z dnia")) {
-            // Ewangelia (nadpisanie sigli jeśli zależy od klucza)
-            val mappedGospel = LectionaryMap.getSigla(dayInfo.lectionaryKey)
-            if (mappedGospel != null) sigla = mappedGospel
+        if (dayInfo.lectionaryKey != null) {
 
-            // Psalm: pobranie sigli i treści z Mapy/DB
-            val mappedPsalmData = LectionaryMap.getPsalmData(dayInfo.lectionaryKey)
-            if (mappedPsalmData != null) {
-                val (rawSigla, rawRefrain) = mappedPsalmData
-                psalmLookupSigla = rawSigla
+            // Ewangelia
+            if (sigla == "Patrz lekcjonarz" || sigla == "Z dnia") {
+                val mappedGospel = LectionaryMap.getSigla(dayInfo.lectionaryKey)
+                if (mappedGospel != null) sigla = mappedGospel
+            }
 
-                // Pobieramy pełną treść psalmu z bazy
-                val fullContentFromDb = psalmDao.getPsalm(rawSigla)
+            // Psalm (jeśli nie znaleziono w święcie stałym)
+            if (!isPsalmFoundInFixed) {
+                val mappedPsalmData = LectionaryMap.getPsalmData(dayInfo.lectionaryKey)
+                if (mappedPsalmData != null) {
+                    val (rawSigla, rawRefrain) = mappedPsalmData
 
-                if (!fullContentFromDb.isNullOrEmpty()) {
-                    // NOWA WERSJA: Pełna treść to TYLKO tekst Psalmu z bazy (bez powtórzonego Refrenu)
-                    psalmFullContent = fullContentFromDb
+                    val finalRefrain = if (psalmDisplay != "Brak danych" && psalmDisplay?.contains("Refren") == true) {
+                        rawRefrain
+                    } else rawRefrain
 
-                    // Skrócony tekst do wyświetlenia na ekranie głównym (Sigla + Refren)
-                    psalmDisplay = "Psalm: $rawSigla, Ref: $rawRefrain"
-                } else {
-                    psalmDisplay = "Psalm: $rawSigla, Ref: $rawRefrain (Brak treści w DB)"
-                    psalmFullContent = null
+                    psalmLookupSigla = rawSigla
+
+                    val fullContentFromDb = findSmartPsalmText(rawSigla)
+
+                    if (!fullContentFromDb.isNullOrEmpty()) {
+                        psalmFullContent = fullContentFromDb
+                        psalmDisplay = "Psalm: $rawSigla, Ref: $finalRefrain"
+                    } else {
+                        // --- DEBUG MODE: BRAK TEKSTU W BAZIE ---
+                        psalmDisplay = "Psalm: $rawSigla (BRAK W BAZIE)"
+                        psalmFullContent = "⚠️ BRAK PSALMU W BAZIE DLA: $rawSigla\nSprawdź czy w tabeli 'psalm_texts' istnieje dokładnie taki klucz (lub bez spacji)."
+                    }
                 }
             }
         }
 
         // 4. INTELIGENTNE POBIERANIE TREŚCI EWANGELII
-        val gospelFullText = findSmartGospelText(sigla)
+        var gospelFullText = findSmartGospelText(sigla)
 
-        if (gospelFullText == null) {
-            Log.e("LITURGY_DB", "BRAK TEKSTU EWANGELII DLA: '$sigla'")
+        // --- DEBUG MODE: BRAK EWANGELII ---
+        if (gospelFullText == null && sigla != "Patrz lekcjonarz" && sigla != "Z dnia") {
+            gospelFullText = "⚠️ BRAK EWANGELII W BAZIE DLA: $sigla\n\nSprawdź tabelę 'gospel_texts'. Aplikacja szukała wariantów:\n1. $sigla\n2. ${sigla.replace(" ", "")}\n3. ${sigla.replace("–", "-")}"
         }
 
         return@withContext DayReadings(
             gospelSigla = sigla,
-            psalmResponse = psalmDisplay ?: "Brak danych", // Skrócona linia do wyświetlenia
+            psalmResponse = psalmDisplay ?: "Brak danych",
             psalmSigla = psalmLookupSigla,
             psalmFullText = psalmFullContent,
             dbFeastName = feastName,
@@ -110,10 +138,9 @@ class CalendarRepository(context: Context) {
         )
     }
 
-    // --- Próbuje znaleźć tekst ignorując spacje i rodzaje myślników (findSmartGospelText pozostaje bez zmian) ---
+    // Funkcja dla Ewangelii
     private suspend fun findSmartGospelText(sigla: String): String? {
         val variants = mutableListOf<String>()
-
         variants.add(sigla)
         variants.add(sigla.replace(" ", ""))
         variants.add(sigla.replace(" ", "").replace("–", "-").replace("—", "-"))
@@ -128,6 +155,22 @@ class CalendarRepository(context: Context) {
         }
         return null
     }
+
+    // Funkcja dla Psalmów
+    private suspend fun findSmartPsalmText(sigla: String): String? {
+        val variants = mutableListOf<String>()
+        variants.add(sigla)
+        variants.add(sigla.replace(" ", ""))
+        variants.add(sigla.replace(" ", "").replace("–", "-").replace("—", "-"))
+        variants.add(sigla.replace("–", "-"))
+
+        for (variant in variants) {
+            val text = psalmDao.getPsalm(variant)
+            if (text != null) return text
+        }
+        return null
+    }
+
     suspend fun getDaysForMonth(year: Int, month: Int): List<LiturgicalDay> = withContext(Dispatchers.IO) {
         val days = mutableListOf<LiturgicalDay>()
         val start = LocalDate.of(year, month, 1)

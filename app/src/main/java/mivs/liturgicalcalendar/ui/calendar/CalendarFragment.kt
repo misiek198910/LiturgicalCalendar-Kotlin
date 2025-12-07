@@ -3,7 +3,7 @@ package mivs.liturgicalcalendar.ui.calendar
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+// Toast usunięty z importów, bo nie jest już potrzebny
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -59,8 +59,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         val currentPage = calendarView.currentPageDate
         viewModel.loadMonthData(currentPage)
         viewModel.onDaySelected(Calendar.getInstance())
-
-        // UWAGA: loadBannerAd() jest teraz wywoływane w observerze isPremium!
     }
 
     private fun setupObservers() {
@@ -86,16 +84,22 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
                         gospelSigla.text = uiState.readings.gospelSigla
                         psalmSiglaDisplay.text = uiState.readings.psalmResponse
 
-                        val hasGospel = !uiState.readings.gospelFullText.isNullOrEmpty()
-                        val hasPsalm = !uiState.readings.psalmFullText.isNullOrEmpty()
+                        val gospelSiglaText = uiState.readings.gospelSigla
+                        val psalmSiglaText = uiState.readings.psalmSigla
 
-                        gospelContainer.visibility = if (hasGospel) View.VISIBLE else View.GONE
-                        psalmContainer.visibility = if (hasPsalm) View.VISIBLE else View.GONE
+                        // Logika ukrywania: Pokaż, jeśli jest pełny tekst LUB jeśli jest znana sigla (nawet bez tekstu)
+                        val showGospel = !uiState.readings.gospelFullText.isNullOrEmpty() ||
+                                (gospelSiglaText.length > 3 && gospelSiglaText != "Patrz lekcjonarz" && gospelSiglaText != "Z dnia")
+
+                        val showPsalm = !uiState.readings.psalmFullText.isNullOrEmpty() ||
+                                (psalmSiglaText != null && psalmSiglaText.length > 2)
+
+                        gospelContainer.visibility = if (showGospel) View.VISIBLE else View.GONE
+                        psalmContainer.visibility = if (showPsalm) View.VISIBLE else View.GONE
                     }
                 }
             }
         }
-
     }
 
     private fun updateDetails(day: mivs.liturgicalcalendar.domain.model.LiturgicalDay) {
@@ -103,7 +107,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         dateText.text = day.date.format(formatter)
         feastText.text = day.feastName ?: "Dzień powszedni"
 
-        // 1. Ustawienie tekstu okresu
         seasonText.text = when(day.season) {
             mivs.liturgicalcalendar.domain.model.LiturgicalSeason.ADVENT -> "Adwent"
             mivs.liturgicalcalendar.domain.model.LiturgicalSeason.CHRISTMAS -> "Boże Narodzenie"
@@ -115,7 +118,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         }
 
         val colorResId = when(day.season) {
-
             mivs.liturgicalcalendar.domain.model.LiturgicalSeason.ADVENT,
             mivs.liturgicalcalendar.domain.model.LiturgicalSeason.LENT -> R.color.liturgical_purple
             mivs.liturgicalcalendar.domain.model.LiturgicalSeason.CHRISTMAS,
@@ -143,29 +145,26 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
 
         gospelContainer.setOnClickListener {
             val currentState = viewModel.uiState.value
+            // Otwieramy tylko jeśli mamy pełny tekst. Jeśli nie ma, nic się nie dzieje (brak Toasta).
             if (currentState != null && !currentState.readings.gospelFullText.isNullOrEmpty()) {
                 val bottomSheet = ReadingsBottomSheet.newInstance(
                     sigla = "Ewangelia: ${currentState.readings.gospelSigla}",
                     content = currentState.readings.gospelFullText!!
                 )
                 bottomSheet.show(parentFragmentManager, "ReadingsSheet")
-            } else {
-                Toast.makeText(requireContext(), "Brak treści Ewangelii.", Toast.LENGTH_SHORT).show()
             }
         }
 
         psalmContainer.setOnClickListener {
             val currentState = viewModel.uiState.value
+            // Otwieramy tylko jeśli mamy pełny tekst. Jeśli nie ma, nic się nie dzieje (brak Toasta).
             if (currentState != null && !currentState.readings.psalmFullText.isNullOrEmpty()) {
                 val bottomSheet = ReadingsBottomSheet.newInstance(
                     sigla = "Psalm: ${currentState.readings.psalmSigla}",
                     content = currentState.readings.psalmFullText!!
                 )
                 bottomSheet.show(parentFragmentManager, "ReadingsSheet")
-            } else {
-                Toast.makeText(requireContext(), "Brak pełnej treści Psalmu w bazie.", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 }

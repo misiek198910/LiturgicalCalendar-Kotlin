@@ -23,19 +23,26 @@ object LiturgicalCalendarCalc {
         val christmas = LocalDate.of(year, Month.DECEMBER, 25)
         val firstAdvent = calculateFirstAdventSunday(year)
 
-        // Do obliczania tygodni zwykłych
+        // Epifania (6 stycznia)
         val epiphany = LocalDate.of(year, Month.JANUARY, 6)
-        // Chrzest Pański: Niedziela po 6.01 (chyba że 6.01 to niedziela, wtedy poniedziałek)
-        var baptismOfLord = epiphany.plusDays((7 - epiphany.dayOfWeek.value % 7).toLong() + 1)
-        if (epiphany.dayOfWeek == DayOfWeek.SUNDAY) baptismOfLord = epiphany.plusDays(1)
+
+        // POPRAWKA: Obliczanie daty Chrztu Pańskiego
+        var baptismOfLord: LocalDate = if (epiphany.dayOfWeek == DayOfWeek.SUNDAY) {
+            // Jeśli 6.01 to Niedziela -> Chrzest jest w poniedziałek 7.01
+            epiphany.plusDays(1)
+        } else {
+            // W przeciwnym razie -> Chrzest jest w następną Niedzielę po 6.01
+            // Usunięto błędne "+ 1", które przesuwało datę o jeden dzień za daleko
+            val daysToSunday = 7 - (epiphany.dayOfWeek.value % 7)
+            epiphany.plusDays(daysToSunday.toLong())
+        }
 
         val christKing = firstAdvent.minusWeeks(1)
 
         // Obliczanie Świętej Rodziny (Niedziela w oktawie lub 30.12)
         val holyFamily = if (christmas.dayOfWeek == DayOfWeek.SUNDAY) {
-            LocalDate.of(year, Month.DECEMBER, 30) // Jeśli B.Narodzenie w niedzielę -> 30.12
+            LocalDate.of(year, Month.DECEMBER, 30)
         } else {
-            // Znajdź niedzielę po 25.12
             christmas.plusDays((7 - christmas.dayOfWeek.value % 7).toLong())
         }
 
@@ -44,10 +51,10 @@ object LiturgicalCalendarCalc {
 
         if ((date.month == Month.DECEMBER && date.dayOfMonth >= 25) ||
             (date.year == year && !date.isAfter(baptismOfLord))) {
+            // Okres Bożego Narodzenia trwa do święta Chrztu Pańskiego włącznie
             season = LiturgicalSeason.CHRISTMAS
         }
         else if (!date.isBefore(ashWednesday) && date.isBefore(easter)) {
-            // Wielki Piątek i Wielka Sobota to Triduum, reszta to Post
             if (date.isEqual(goodFriday) || date.isEqual(easter.minusDays(1))) {
                 season = LiturgicalSeason.TRIDUUM
             } else {
@@ -61,7 +68,6 @@ object LiturgicalCalendarCalc {
             season = LiturgicalSeason.ADVENT
         }
 
-        // --- 2. DETEKCJA ŚWIĄT RUCHOMYCH ---
         var feastName: String? = null
         var isSolemnity = false
         var feastKey: String? = null
@@ -96,32 +102,36 @@ object LiturgicalCalendarCalc {
             feastKey = "CORPUS_CHRISTI"
         }
         else if (date.isEqual(epiphany)) {
-            // Epifania jest w bazie stałej
+            // Epifania jest zazwyczaj w bazie fixed_feasts
         }
         else if (date.isEqual(baptismOfLord)) {
             feastName = "Święto Chrztu Pańskiego"
+            feastKey = "BAPTISM_OF_LORD" // Dodano klucz dla porządku
         }
         else if (date.isEqual(christKing)) {
             feastName = "Uroczystość Jezusa Chrystusa, Króla Wszechświata"
             isSolemnity = true
             feastKey = "CHRIST_KING"
         }
-        else if (date.isEqual(holyFamily)) { // <--- DODANO OBSŁUGĘ ŚWIĘTEJ RODZINY
+        else if (date.isEqual(holyFamily)) {
             feastName = "Święto Świętej Rodziny Jezusa, Maryi i Józefa"
             isSolemnity = true
             feastKey = "HOLY_FAMILY"
-            // Kolor wyniknie z sezonu (CHRISTMAS -> Biały)
         }
 
-        // --- 3. OBLICZANIE KLUCZA LEKCJONARZA ---
         val sundayCycle = CycleCalculator.calculateSundayCycle(date, season)
         val weekdayCycle = CycleCalculator.calculateWeekdayCycle(date, season)
 
-        val lectionaryKey = if (feastKey == null) {
+        // --- OBLICZANIE KLUCZA LEKCJONARZA ---
+        val lectionaryKey = if (feastKey == "HOLY_FAMILY") {
+            "HOLY_FAMILY_$sundayCycle"
+        } else if (feastKey == null || date.isEqual(baptismOfLord)) {
+            // Ważne: Chrzest Pański (baptismOfLord) nie ma null w feastKey, ale musi wejść do kalkulacji
+            // żeby dostać klucz "ORD_SUN_1_..." (Niedziela Chrztu to liturgicznie 1. Niedziela Zwykła)
             calculateLectionaryKey(date, season, firstAdvent, ashWednesday, easter, sundayCycle, baptismOfLord, christKing)
         } else null
 
-        // --- 4. GENEROWANIE NAZW NIEDZIEL ---
+
         if (feastName == null && date.dayOfWeek == DayOfWeek.SUNDAY) {
             when (season) {
                 LiturgicalSeason.ADVENT -> {
@@ -173,33 +183,60 @@ object LiturgicalCalendarCalc {
         baptismOfLord: LocalDate,
         christKing: LocalDate
     ): String? {
-        val dow = date.dayOfWeek.name.take(3) // MON, TUE...
+        val dow = date.dayOfWeek.name.take(3)
 
         return when (season) {
             LiturgicalSeason.ADVENT -> {
                 val weekNum = (ChronoUnit.DAYS.between(adventStart, date) / 7).toInt() + 1
                 if (dow == "SUN") "ADVENT_SUN_${weekNum}_$cycle" else "ADVENT_W${weekNum}_$dow"
             }
+
             LiturgicalSeason.LENT, LiturgicalSeason.TRIDUUM -> {
                 val daysFromAsh = ChronoUnit.DAYS.between(ashWednesday, date)
                 if (daysFromAsh < 4) "LENT_ASH_$dow"
                 else {
-                    val weekNum = (daysFromAsh / 7).toInt() + 1
-                    if (dow == "SUN") "LENT_SUN_${weekNum}_$cycle" else "LENT_W${weekNum}_$dow"
+                    // POPRAWKA MATEMATYKI: Odejmujemy 4 dni (śr-sob), żeby liczyć tygodnie od Niedzieli
+                    val weekNum = ((daysFromAsh - 4) / 7).toInt() + 1
+
+                    if (weekNum == 6) {
+                        // Tydzień 6 to Wielki Tydzień
+                        if (dow == "SUN") "LENT_SUN_6_$cycle" // Niedziela Palmowa
+                        else "HOLY_WEEK_$dow" // Wielki Poniedziałek, Wtorek, Środa...
+                    } else {
+                        if (dow == "SUN") "LENT_SUN_${weekNum}_$cycle" else "LENT_W${weekNum}_$dow"
+                    }
                 }
             }
+
             LiturgicalSeason.EASTER -> {
                 val weekNum = (ChronoUnit.DAYS.between(easter, date) / 7).toInt() + 1
                 if (dow == "SUN") "EASTER_SUN_${weekNum}_$cycle" else "EASTER_W${weekNum}_$dow"
             }
+
+            LiturgicalSeason.CHRISTMAS -> {
+                if (date.month == Month.DECEMBER && date.dayOfMonth > 25) {
+                    val dayOfOctave = date.dayOfMonth - 25 + 1
+                    "CHRISTMAS_OCTAVE_$dayOfOctave"
+                }
+                else if (date.month == Month.JANUARY) {
+                    if (date.dayOfMonth in 2..5) {
+                        "CHRISTMAS_JAN_${date.dayOfMonth}"
+                    }
+                    else if (date.isEqual(baptismOfLord)) {
+                        "ORD_SUN_1_$cycle"
+                    }
+                    else if (date.dayOfMonth >= 7 && date.isBefore(baptismOfLord)) {
+                        "CHRISTMAS_AFTER_EPIPHANY_$dow"
+                    } else null
+                } else null
+            }
+
             LiturgicalSeason.ORDINARY_TIME -> {
                 var weekNum = 0
-                // Część 1
                 if (date.isBefore(ashWednesday)) {
                     val daysFromBaptism = ChronoUnit.DAYS.between(baptismOfLord, date)
                     weekNum = (daysFromBaptism / 7).toInt() + 1
                 }
-                // Część 2
                 else {
                     val weeksFromEnd = (ChronoUnit.DAYS.between(date, christKing) / 7).toInt()
                     weekNum = 34 - weeksFromEnd

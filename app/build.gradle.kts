@@ -6,52 +6,52 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
-val localProperties = Properties()
+val props = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use { localProperties.load(it) }
+    localPropertiesFile.inputStream().use { props.load(it) }
 }
 
 android {
     namespace = "mivs.liturgicalcalendar"
-    compileSdk {
-        version = release(36)
-    }
+
+    compileSdk = 36
 
     defaultConfig {
+        manifestPlaceholders += mapOf()
         applicationId = "mivs.kalendarz_liturgiczny"
         minSdk = 27
         targetSdk = 36
-        versionCode = 37
-        versionName = "1.37"
+        versionCode = 38
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val admobAppId = props.getProperty("ADMOB_APP_ID", "BRAK_ID")
+        manifestPlaceholders["admobAppId"] = admobAppId
     }
+
     signingConfigs {
         create("release") {
-            storeFile = file(localProperties.getProperty("MYAPP_RELEASE_STORE_FILE", "brak-sciezki"))
-            storePassword = localProperties.getProperty("MYAPP_RELEASE_STORE_PASSWORD", "")
-            keyAlias = localProperties.getProperty("MYAPP_RELEASE_KEY_ALIAS", "")
-            keyPassword = localProperties.getProperty("MYAPP_RELEASE_KEY_PASSWORD", "")
+            // Czytamy z 'props'
+            storeFile = file(props.getProperty("MYAPP_RELEASE_STORE_FILE", "brak-sciezki"))
+            storePassword = props.getProperty("MYAPP_RELEASE_STORE_PASSWORD", "")
+            keyAlias = props.getProperty("MYAPP_RELEASE_KEY_ALIAS", "")
+            keyPassword = props.getProperty("MYAPP_RELEASE_KEY_PASSWORD", "")
         }
     }
 
     buildTypes {
         release {
 
-            val keystoreProperties = Properties()
-            val keystorePropertiesFile = rootProject.file("local.properties")
-            if (keystorePropertiesFile.exists()) {
-                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-            }
-
-            val bannerId = keystoreProperties["AD_BANNER_ID"] as? String ?: "BRAK_ID"
-            val adStartId = keystoreProperties["AD_START_UNIT_ID"] as? String ?: "BRAK_ID"
+            val bannerId = props.getProperty("AD_BANNER_ID", "BRAK_ID")
+            val adStartId = props.getProperty("AD_START_UNIT_ID", "BRAK_ID")
 
             buildConfigField("String", "AD_BANNER_ID", "\"$bannerId\"")
             buildConfigField("String", "AD_START_UNIT_ID", "\"$adStartId\"")
 
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -59,10 +59,12 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
+            // Testowe ID od Google
             buildConfigField("String", "AD_BANNER_ID", "\"ca-app-pub-3940256099942544/6300978111\"")
             buildConfigField("String", "AD_START_UNIT_ID", "\"ca-app-pub-3940256099942544/3419835294\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

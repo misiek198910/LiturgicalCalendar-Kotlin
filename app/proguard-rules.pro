@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# --- ROOM DATABASE RULES ---
+-keep class androidx.room.RoomDatabase { *; }
+-keep class * extends androidx.room.RoomDatabase
+-keep class * implements androidx.room.RoomDatabase
+
+# Zabezpiecz swoje encje (modele danych)
+# Podmień 'mivs.liturgicalcalendar' na Twoją dokładną paczkę, jeśli jest inna
+-keep class mivs.liturgicalcalendar.data.entity.** { *; }
+-keep class mivs.liturgicalcalendar.domain.model.** { *; }
+
+# Ostrzeżenia, które można zignorować w Room
+-dontwarn androidx.room.paging.**

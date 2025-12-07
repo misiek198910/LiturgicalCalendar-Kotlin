@@ -18,7 +18,7 @@ import mivs.liturgicalcalendar.data.entity.UserStatusEntity
 
 @Database(
     entities = [FixedFeastEntity::class, GospelEntity::class, MovableFeastEntity::class, PsalmEntity::class, UserStatusEntity::class],
-    version = 16,
+    version = 29,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -40,8 +40,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "liturgical_v2.db"
                 )
-                    .createFromAsset("liturgical_v2.db") // <--- Ładujemy Twoją nową bazę!
-                    .fallbackToDestructiveMigration() // Ważne przy zmianie wersji
+                    .createFromAsset("liturgical_v2.db")
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

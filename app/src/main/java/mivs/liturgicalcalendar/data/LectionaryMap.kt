@@ -9,17 +9,168 @@ object LectionaryMap {
 
     val map = mapOf(
 
-        // CHRZEST PAŃSKI (Niedziele po 6 stycznia)
-        "ORD_SUN_1_A" to "MT3,13-17",       // Rok A (2026)
-        "ORD_SUN_1_B" to "MK1,7-11",       // Rok B
-        "ORD_SUN_1_C" to "ŁK3,15-16.21-22", // Rok C (2025)
+        // Tygodzień 13 (1-4 Lipca)
+        "ORD_W13_WED" to "MT8,28-34",
+        "ORD_W13_THU" to "MT9,1-8",
+        "ORD_W13_FRI" to "MT9,9-13",
+        "ORD_W13_SAT" to "MT9,14-17",
 
-        // --- NIEDZIELE ZWYKŁE ROK A (2026) ---
+        // Tydzień 14
+        "ORD_W14_MON" to "MT9,18-26",
+        "ORD_W14_TUE" to "MT9,32-38",
+        "ORD_W14_WED" to "MT10,1-7",
+        "ORD_W14_THU" to "MT10,7-15",
+        "ORD_W14_FRI" to "MT10,16-23",
+        "ORD_W14_SAT" to "MT10,24-33",
+
+        // Tydzień 15
+        "ORD_W15_MON" to "MT10,34-11,1",
+        "ORD_W15_TUE" to "MT11,20-24",
+        "ORD_W15_WED" to "MT11,25-27",
+        "ORD_W15_THU" to "MT11,28-30",
+        "ORD_W15_FRI" to "MT12,1-8",
+        "ORD_W15_SAT" to "MT12,14-21",
+
+        // Tydzień 16
+        "ORD_W16_MON" to "MT12,38-42",
+        "ORD_W16_TUE" to "MT12,46-50",
+        "ORD_W16_WED" to "MT13,1-9",
+        "ORD_W16_THU" to "MT13,10-17",
+        "ORD_W16_FRI" to "MT13,18-23",
+        "ORD_W16_SAT" to "MT20,20-28",
+
+        // Tydzień 17
+        "ORD_W17_MON" to "MT13,31-35",
+        "ORD_W17_TUE" to "MT13,36-43",
+        "ORD_W17_WED" to "MT13,44-46",
+        "ORD_W17_THU" to "MT13,47-53",
+        "ORD_W17_FRI" to "MT13,54-58",
+        "ORD_W17_SAT" to "MT14,1-12",
+
+        // Tydzień 18
+        "ORD_W18_MON" to "MT14,22-36",
+        "ORD_W18_TUE" to "MT15,1-2.10-14",
+        "ORD_W18_WED" to "MT15,21-28",
+        "ORD_W18_THU" to "MT16,13-23",
+        "ORD_W18_FRI" to "MT16,24-28",
+        "ORD_W18_SAT" to "MT17,14-20",
+
+        // Tydzień 19
+        "ORD_W19_MON" to "MT17,22-27",
+        "ORD_W19_TUE" to "MT18,1-5.10.12-14",
+        "ORD_W19_WED" to "MT18,15-20",
+        "ORD_W19_THU" to "MT18,21-19,1",
+        "ORD_W19_FRI" to "MT19,3-12",
+        "ORD_W19_SAT" to "MT19,13-15",
+
+        // Tydzień 20
+        "ORD_W20_MON" to "MT19,16-22",
+        "ORD_W20_TUE" to "MT19,23-30",
+        "ORD_W20_WED" to "MT20,1-16",
+        "ORD_W20_THU" to "MT22,1-14",
+        "ORD_W20_FRI" to "MT22,34-40",
+        "ORD_W20_SAT" to "MT23,1-12",
+
+        // Tydzień 21
+        "ORD_W21_MON" to "MT23,13-22",
+        "ORD_W21_TUE" to "MT23,23-26",
+        "ORD_W21_WED" to "MT23,27-32",
+        "ORD_W21_THU" to "MT24,42-51",
+        "ORD_W21_FRI" to "MT25,1-13",
+        "ORD_W21_SAT" to "MT25,14-30",
+
+        // Tydzień 22 (Początek)
+        "ORD_W22_MON" to "ŁK4,16-30",
+
+        // NIEDZIELE SIERPNIA (Rok A)
+        "ORD_SUN_18_A" to "MT14,13-21",
+        "ORD_SUN_19_A" to "MT14,22-33",
+        "ORD_SUN_20_A" to "MT15,21-28",
+        "ORD_SUN_21_A" to "MT16,13-20",
+        "ORD_SUN_22_A" to "MT16,21-27",
+
+        // NIEDZIELE LIPCA (Rok A - 2026)
+        "ORD_SUN_14_A" to "MT11,25-30",
+        "ORD_SUN_15_A" to "MT13,1-23",
+        "ORD_SUN_16_A" to "MT13,24-43",
+        "ORD_SUN_17_A" to "MT13,44-52",
+
+        // Tydzień 9
+        "ORD_W9_MON" to "MK12,1-12",
+        "ORD_W9_TUE" to "MK12,13-17",
+        "ORD_W9_WED" to "MK12,18-27",
+        "ORD_W9_THU" to "MK12,28-34",
+        "ORD_W9_FRI" to "MK12,35-37",
+        "ORD_W9_SAT" to "MK12,38-44",
+
+        // Tydzień 10
+        "ORD_W10_MON" to "MT5,1-12",
+        "ORD_W10_TUE" to "MT5,13-16",
+        "ORD_W10_WED" to "MT5,17-19",
+        "ORD_W10_THU" to "MT5,20-26",
+        "ORD_W10_FRI" to "MT5,27-32",
+        "ORD_W10_SAT" to "MT5,33-37",
+
+        // Tydzień 11
+        "ORD_W11_MON" to "MT5,38-42",
+        "ORD_W11_TUE" to "MT5,43-48",
+        "ORD_W11_WED" to "MT6,1-6.16-18",
+        "ORD_W11_THU" to "MT6,7-15",
+        "ORD_W11_FRI" to "MT6,19-23",
+        "ORD_W11_SAT" to "MT6,24-34",
+
+        // Tydzień 12
+        "ORD_W12_MON" to "MT7,1-5",
+        "ORD_W12_TUE" to "MT7,6.12-14",
+        "ORD_W12_WED" to "MT7,15-20",
+        "ORD_W12_THU" to "MT7,21-29",
+        "ORD_W12_FRI" to "MT8,1-4",
+        "ORD_W12_SAT" to "MT8,5-17",
+
+        // Tydzień 13
+        "ORD_W13_MON" to "MT8,18-22",
+        "ORD_W13_TUE" to "MT8,23-27",
+        "ORD_W13_WED" to "MT8,28-34",
+
+        // NIEDZIELE CZERWCA (Rok A - 2026)
+        "ORD_SUN_10_A" to "MT9,9-13",
+        "ORD_SUN_11_A" to "MT9,36-10,8",
+        "ORD_SUN_12_A" to "MT10,26-33",
+        "ORD_SUN_13_A" to "MT10,37-42",
+
+        "ORD_W8_MON" to "MK10,17-27",
+        "ORD_W8_TUE" to "MK10,28-31",
+        "ORD_W8_WED" to "MK10,32-45",
+        "ORD_W8_THU" to "MK10,46-52",
+        "ORD_W8_FRI" to "MK11,11-26",
+        "ORD_W8_SAT" to "MK11,27-33",
+
+        // WIELKI TYDZIEŃ (Czwartek, Sobota) ---
+        "HOLY_WEEK_THU" to "J13,1-15",
+        "HOLY_WEEK_FRI" to "J18,1-19,42",
+        "HOLY_WEEK_SAT" to "MT28,1-10",
+
+        // OKTAWA WIELKANOCNA (Tydzień 1) ---
+        "EASTER_W1_MON" to "MT28,8-15",
+        "EASTER_W1_TUE" to "J20,11-18",
+        "EASTER_W1_WED" to "ŁK24,13-35",
+        "EASTER_W1_THU" to "ŁK24,35-48",
+        "EASTER_W1_FRI" to "J21,1-14",
+        "EASTER_W1_SAT" to "MK16,9-15",
+
+
+
+        // CHRZEST PAŃSKI (Niedziele po 6 stycznia)
+        "ORD_SUN_1_A" to "MT3,13-17",
+        "ORD_SUN_1_B" to "MK1,7-11",
+        "ORD_SUN_1_C" to "ŁK3,15-16.21-22",
+
+        // --- NIEDZIELE ZWYKŁE ROK A
         "ORD_SUN_2_A" to "J1,29-34",
         "ORD_SUN_3_A" to "MT4,12-17.23-25",
-        "ORD_SUN_4_A" to "MT5,1-12A", // To naprawi 1 Lutego
-        "ORD_SUN_5_A" to "MT5,13-16", // To naprawi 8 Lutego
-        "ORD_SUN_6_A" to "MT5,17-37", // To naprawi 15 Lutego
+        "ORD_SUN_4_A" to "MT5,1-12A",
+        "ORD_SUN_5_A" to "MT5,13-16",
+        "ORD_SUN_6_A" to "MT5,17-37",
         "ORD_SUN_7_A" to "MT5,38-48",
         "ORD_SUN_8_A" to "MT6,24-34",
         "ORD_SUN_9_A" to "MT7,21-27",
@@ -48,6 +199,7 @@ object LectionaryMap {
         "CHRISTMAS_JAN_3" to "1 J 2,29–3,6",
         "CHRISTMAS_JAN_4" to "1 J 3,7–10",
         "CHRISTMAS_JAN_5" to "1 J 3,11–21",
+
         "CHRISTMAS_AFTER_EPIPHANY_MON" to "MT4,12–17.23–25",
         "CHRISTMAS_AFTER_EPIPHANY_TUE" to "MK6,34–44",
         "CHRISTMAS_AFTER_EPIPHANY_WED" to "MK6,45-52",
@@ -60,21 +212,21 @@ object LectionaryMap {
         "ORD_W3_WED" to "MK4,1–20",
         "ORD_W3_THU" to "MK4,21–25",
         "ORD_W3_FRI" to "MK4,26–34",
-        "ORD_W3_SAT" to "MK4,35–41", // 1 Lutego
+        "ORD_W3_SAT" to "MK4,35–41",
 
         "ORD_W4_MON" to "MK5,1–20",
         "ORD_W4_TUE" to "MK5,21–43",
         "ORD_W4_WED" to "MK6,1–6",
         "ORD_W4_THU" to "MK6,7–13",
         "ORD_W4_FRI" to "MK6,14–29",
-        "ORD_W4_SAT" to "MK6,30–34", // 8 Lutego
+        "ORD_W4_SAT" to "MK6,30–34",
 
         "ORD_W5_MON" to "MK6,53–56",
         "ORD_W5_TUE" to "MK7,1–13",
         "ORD_W5_WED" to "MK7,14–23",
-        "ORD_W5_THU" to "MK7,24–30", // 13 Lutego
+        "ORD_W5_THU" to "MK7,24–30",
         "ORD_W5_FRI" to "MK7,31–37",
-        "ORD_W5_SAT" to "MK8,1–10",  // 15 Lutego
+        "ORD_W5_SAT" to "MK8,1–10",
 
         // ADWENT
         "ADVENT_W1_MON" to "MT8,5–11",
@@ -184,11 +336,7 @@ object LectionaryMap {
         "EASTER_W7_FRI" to "J21,15–19",
         "EASTER_W7_SAT" to "J21,20–25",
 
-
-        // ============================================================
-        // OKRES ZWYKŁY (Dni powszednie z 2025)
-        // ============================================================
-        "ORD_W1_MON" to "MK1,14–20", // Dodane ręcznie (brak w logu, ale to standard)
+        "ORD_W1_MON" to "MK1,14–20",
         "ORD_W1_TUE" to "MK1,21–28",
         "ORD_W1_WED" to "MK1,29–39",
         "ORD_W1_THU" to "MK1,40–45",
@@ -479,6 +627,162 @@ object LectionaryMap {
     )
     val psalmMap = mapOf(
 
+        // Dokończenie Tygodnia 13
+        "ORD_W13_WED" to Pair("Ps 50,7-13.16-17", "Kto składa dziękczynienie, ten cześć Mi oddaje"),
+        "ORD_W13_THU" to Pair("Ps 19,8-11", "Słowa Twe, Panie, są duchem i życiem"),
+        "ORD_W13_FRI" to Pair("Ps 117,1-2", "Całemu światu głoście Ewangelię"),
+        "ORD_W13_SAT" to Pair("Ps 85,9-14", "Okaż nam, Panie, łaskę i zbawienie"),
+
+        // Tydzień 14
+        "ORD_W14_MON" to Pair("Ps 145,2-9", "Pan jest łaskawy, pełen miłosierdzia"),
+        "ORD_W14_TUE" to Pair("Ps 115,3-10", "Domu Izraela, zaufaj Panu"),
+        "ORD_W14_WED" to Pair("Ps 105,2-7", "Zawsze szukajcie oblicza Pańskiego"),
+        "ORD_W14_THU" to Pair("Ps 80,2-3.15-16", "Odnów nas, Boże, i daj nam zbawienie"),
+        "ORD_W14_FRI" to Pair("Ps 51,3-4.8-9.12-14.17", "Moimi ustami będę głosił Twą chwałę"),
+        "ORD_W14_SAT" to Pair("Ps 93,1-2.5", "Pan Bóg króluje, pełen majestatu"),
+
+        // Tydzień 15
+        "ORD_W15_MON" to Pair("Ps 50,8-9.16-17.21.23", "Kto składa dziękczynienie, ten cześć Mi oddaje"),
+        "ORD_W15_TUE" to Pair("Ps 48,2-8", "Bóg uwiecznił swoje święte miasto"),
+        "ORD_W15_WED" to Pair("Ps 94,5-10.14-15", "Pan nie odrzuca ludu wybranego"),
+        "ORD_W15_THU" to Pair("Ps 102,13-21", "Pan spojrzał z nieba na ziemię"),
+        "ORD_W15_FRI" to Pair("Is 38,10-12.16", "Tyś ocalił moje życie od zguby wiecznej"),
+        "ORD_W15_SAT" to Pair("Ps 10,1-4.7-8.14", "Nie zapominaj o ubogich, Panie"),
+
+        // Tydzień 16
+        "ORD_W16_MON" to Pair("Ps 50,5-6.8-9.16-17.21.23", "Kto składa dziękczynienie, ten cześć Mi oddaje"),
+        "ORD_W16_TUE" to Pair("Ps 85,2-8", "Okaż nam, Panie, łaskę i zbawienie"),
+        "ORD_W16_WED" to Pair("Ps 63,2-6.8-9", "Ciebie, mój Boże, pragnie moja dusza"),
+        "ORD_W16_THU" to Pair("Ps 36,6-11", "W Tobie jest źródło życia"),
+        "ORD_W16_FRI" to Pair("Jr 31,10-13", "Pan nas obroni, tak jak pasterz owce"),
+        "ORD_W16_SAT" to Pair("Ps 126,1-6", "Ci, którzy we łzach sieją, żąć będą w radości"),
+
+        // Tydzień 17
+        "ORD_W17_MON" to Pair("Dt 32,18-21", "Bóg, który cię stworzył, o Nim zapomniałeś"),
+        "ORD_W17_TUE" to Pair("Ps 79,8-9.11.13", "Dla chwały Twego imienia wyzwól nas, Panie"),
+        "ORD_W17_WED" to Pair("Ps 59,2-4.10-11.17-18", "Boże, ucieczko moja w dzień utrapienia"),
+        "ORD_W17_THU" to Pair("Ps 146,1-6", "Błogosławiony, kto zaufał Panu"),
+        "ORD_W17_FRI" to Pair("Ps 69,5.8-10.14", "W dobroci Twojej wysłuchaj mnie, Panie"),
+        "ORD_W17_SAT" to Pair("Ps 69,15-16.30-34", "W dobroci Twojej wysłuchaj mnie, Panie"),
+
+        // --- SIERPIEŃ 2026 (Psalmy) ---
+
+        // Tydzień 18
+        "ORD_W18_MON" to Pair("Ps 119,29.43.79-80.95.102", "Naucz mnie, Panie, Twoich ustaw"),
+        "ORD_W18_TUE" to Pair("Ps 102,16-21", "Pan się objawi w chwale na Syjonie"),
+        "ORD_W18_WED" to Pair("Jr 31,10-13", "Pan nas obroni, tak jak pasterz owce"),
+        "ORD_W18_THU" to Pair("Ps 97,1-2.5-6.9", "Pan wywyższony króluje nad ziemią"),
+        "ORD_W18_FRI" to Pair("Dt 32,35-36.39.41", "Ja, Pan, zabijam i Ja sam ożywiam"),
+        "ORD_W18_SAT" to Pair("Ps 9,8-12", "Pan będzie sądził ludy sprawiedliwie"),
+
+        // Tydzień 19
+        "ORD_W19_MON" to Pair("Ps 148,1-2.11-14", "Niech imię Pana chwalą wszystkie ludy"),
+        "ORD_W19_TUE" to Pair("Ps 119,14.24.72.103.111.131", "Nad miód są słodsze Twoje przykazania"),
+        "ORD_W19_WED" to Pair("Ps 113,1-6", "Ponad niebiosa chwała Pana Boga"),
+        "ORD_W19_THU" to Pair("Ps 78,56-59.61-62", "O dziełach Boga nie zapominajmy"),
+        "ORD_W19_FRI" to Pair("Is 12,2-6", "Będziemy chwalić Pana, bo wielkie są Jego dzieła"),
+        "ORD_W19_SAT" to Pair("Ps 45,10-12.16", "Stoi Królowa po Twojej prawicy"),
+
+        // Tydzień 20
+        "ORD_W20_MON" to Pair("Dt 32,18-21", "Wspomnij na Boga, który stworzył ciebie"),
+        "ORD_W20_TUE" to Pair("Dt 32,26-28.30.35-36", "Ja, Pan, zabijam i Ja sam ożywiam"),
+        "ORD_W20_WED" to Pair("Ps 23,1-6", "Pan mym pasterzem, nie brak mi niczego"),
+        "ORD_W20_THU" to Pair("Ps 51,12-15.18-19", "Stwórz, o mój Boże, we mnie serce czyste"),
+        "ORD_W20_FRI" to Pair("Ps 107,2-9", "Chwalmy na wieki miłosierdzie Pana"),
+        "ORD_W20_SAT" to Pair("Ps 85,9-14", "Niech chwała Pana zamieszka na ziemi"),
+
+        // Tydzień 21
+        "ORD_W21_MON" to Pair("Ps 96,1-3.7-8.10", "Pośród narodów głoście chwałę Pana"),
+        "ORD_W21_TUE" to Pair("Ps 96,10-13", "Pan Bóg nadchodzi, aby sądzić ziemię"),
+        "ORD_W21_WED" to Pair("Ps 128,1-2.4-5", "Błogosławiony, kto się boi Pana"),
+        "ORD_W21_THU" to Pair("Ps 145,2-7", "Będę Cię wielbił, Boże mój i Królu"),
+        "ORD_W21_FRI" to Pair("Ps 33,1-2.4-5.10-11", "Pełna jest ziemia łaskawości Pana"),
+        "ORD_W21_SAT" to Pair("Ps 33,12-13.18-21", "Szczęśliwy naród wybrany przez Pana"),
+
+        // Tydzień 22
+        "ORD_W22_MON" to Pair("Ps 119,97-102", "Jakże miłuję Prawo Twoje, Panie"),
+
+        // NIEDZIELE SIERPNIA
+        "ORD_SUN_18_A" to Pair("Ps 145,8-9.15-18", "Otwierasz rękę, karmisz nas do syta"),
+        "ORD_SUN_19_A" to Pair("Ps 85,9-14", "Okaż nam, Panie, łaskę i zbawienie"),
+        "ORD_SUN_20_A" to Pair("Ps 67,2-3.5.8", "Niech wszystkie ludy sławią Ciebie, Boże"),
+        "ORD_SUN_21_A" to Pair("Ps 138,1-3.6.8", "Panie, Twa łaska trwa po wszystkie wieki"),
+        "ORD_SUN_22_A" to Pair("Ps 63,2-6.8-9", "Ciebie, mój Boże, pragnie moja dusza"),
+
+
+        // NIEDZIELE LIPCA
+        "ORD_SUN_14_A" to Pair("Ps 145,1-2.8-11.13-14", "Będę Cię wielbił, Boże mój i Królu"),
+        "ORD_SUN_15_A" to Pair("Ps 65,10-14", "Na żyznej ziemi ziarno wyda plony"),
+        "ORD_SUN_16_A" to Pair("Ps 86,5-6.9-10.15-16", "Panie, Ty jesteś dobry i łaskawy"),
+        "ORD_SUN_17_A" to Pair("Ps 119,57.72.76-77.127-130", "Jakże miłuję prawo Twoje, Panie"),
+
+        // Tydzień 9
+        "ORD_W9_MON" to Pair("Ps 91,1-2.14-16", "Tobie, mój Boże, zaufałem"),
+        "ORD_W9_TUE" to Pair("Ps 90,2-4.10.14.16", "Panie, Ty zawsze byłeś nam ucieczką"),
+        "ORD_W9_WED" to Pair("Ps 123,1-2", "Do Ciebie, Boże, wznoszę moje oczy"),
+        "ORD_W9_THU" to Pair("Ps 25,4-5.8-10.14", "Do Ciebie, Panie, wznoszę moją duszę"),
+        "ORD_W9_FRI" to Pair("Ps 119,161-168", "Obfity pokój dla miłujących Prawo"),
+        "ORD_W9_SAT" to Pair("Ps 8,2-7", "O jak przedziwne imię Twoje, Panie"),
+
+        // Tydzień 10
+        "ORD_W10_MON" to Pair("Ps 121,1-8", "Naszą pomocą jest nasz Pan i Stwórca"),
+        "ORD_W10_TUE" to Pair("Ps 119,27.30.34-35.129-130", "Twoja obecność, Panie, naszą chwałą"),
+        "ORD_W10_WED" to Pair("Ps 16,1-2.4-5.8.11", "Strzeż mnie, o Boże, Tobie zaufałem"),
+        "ORD_W10_THU" to Pair("Ps 65,10-14", "Ciebie należy wielbić na Syjonie"),
+        "ORD_W10_FRI" to Pair("Ps 27,7-9.13-14", "Szukam, o Panie, Twego oblicza"),
+        "ORD_W10_SAT" to Pair("Ps 116B,12-14.17-19", "Tobie, mój Boże, złożę ofiarę pochwalną"),
+
+        // Tydzień 11
+        "ORD_W11_MON" to Pair("Ps 5,2-3.5-7", "Usłysz, o Panie, moje wołanie"),
+        "ORD_W11_TUE" to Pair("Ps 51,3-6.11.16", "Zmiłuj się, Panie, bo jesteśmy grzeszni"),
+        "ORD_W11_WED" to Pair("Ps 31,20-21.24", "Bądźcie odważni, ufający Panu"),
+        "ORD_W11_THU" to Pair("Ps 97,1-7.11-12", "Radujcie się w Panu, wy sprawiedliwi"),
+        "ORD_W11_FRI" to Pair("Ps 132,11-14.17-18", "Pan Bóg wybrał Syjon na swoje mieszkanie"),
+        "ORD_W11_SAT" to Pair("Ps 89,2-5.29.34", "Na wieki będę sławił łaski Pana"),
+
+        // Tydzień 12
+        "ORD_W12_MON" to Pair("Ps 60,3-5.12-14", "Wspomóż nas, Boże, przeciwko wrogom"),
+        "ORD_W12_TUE" to Pair("Ps 48,2-4.9-11", "Bóg uwiecznił swoje święte miasto"),
+        "ORD_W12_WED" to Pair("Ps 119,33-40", "Prowadź mnie, Panie, ścieżką Twych przykazań"),
+        "ORD_W12_THU" to Pair("Ps 106,1-5", "Chwalmy na wieki miłosierdzie Pana"),
+        "ORD_W12_FRI" to Pair("Ps 74,1-4.20-21", "Wspomnij na naród, który nabyłeś"),
+        "ORD_W12_SAT" to Pair("Ps 79,8-9.11.13", "Dla chwały Twego imienia wyzwól nas, Panie"),
+
+        // Tydzień 13
+        "ORD_W13_MON" to Pair("Ps 103,1-4.8-11", "Błogosław, duszo moja, Pana"),
+        "ORD_W13_TUE" to Pair("Ps 5,5-8", "Prowadź mnie, Panie, w swej sprawiedliwości"),
+
+        // NIEDZIELE CZERWCA
+        "ORD_SUN_10_A" to Pair("Ps 50,1.8.12-15", "Boże zbawienie ukażę uczciwym"),
+        "ORD_SUN_11_A" to Pair("Ps 100,1-5", "My ludem Pana i jego owcami"),
+        "ORD_SUN_12_A" to Pair("Ps 69,8-10.14.17.33-35", "W dobroci Twojej wysłuchaj mnie, Panie"),
+        "ORD_SUN_13_A" to Pair("Ps 89,2-3.16-19", "Na wieki będę sławił łaski Pana"),
+
+        "ORD_W8_MON" to Pair("Ps 111,1-2.5-6.9.10c", "Pan Bóg pamięta o swoim przymierzu"),
+        "ORD_W8_TUE" to Pair("Ps 98,1-4", "Pan okazał swoje zbawienie"),
+        "ORD_W8_WED" to Pair("Ps 147,12-15.19-20", "Kościele święty, chwal swojego Pana"),
+        "ORD_W8_THU" to Pair("Ps 100,2-5", "Wykrzykujcie na cześć Pana, wszystkie ziemie"),
+        "ORD_W8_FRI" to Pair("Ps 96,10-13", "Pan będzie sądził ludy sprawiedliwie"),
+        "ORD_W8_SAT" to Pair("Ps 63,2-6", "Ciebie, mój Boże, pragnie moja dusza"),
+
+        // --- UZUPEŁNIENIE: OKRES WIELKANOCNY (Brakujące dni maja) ---
+        "EASTER_W5_WED" to Pair("Ps 122,1-5", "Idźmy z radością na spotkanie Pana"),
+        "EASTER_W5_FRI" to Pair("Ps 57,8-11", "Wśród ludów świata, będę chwalił Pana"),
+        "EASTER_W6_TUE" to Pair("Ps 138,1-3.7-8", "Będę Cię sławił, Panie, z całego serca"),
+
+        // WIELKI TYDZIEŃ ---
+        "HOLY_WEEK_THU" to Pair("Ps 116B,12-13.15-18", "Kielich Przymierza to Krew Zbawiciela"),
+        "HOLY_WEEK_FRI" to Pair("Ps 31,2.6.12-17.25", "Ojcze, w Twoje ręce powierzam ducha mojego"),
+        "HOLY_WEEK_SAT" to Pair("Ps 118,1-2.16-17.22-23", "Alleluja, Alleluja, Alleluja"),
+
+        // OKTAWA WIELKANOCNA ---
+        "EASTER_W1_MON" to Pair("Ps 16,1-2.5.7-11", "Strzeż mnie, o Boże, Tobie zaufałem"),
+        "EASTER_W1_TUE" to Pair("Ps 33,4-5.18-20.22", "Pełna jest ziemia łaskawości Pana"),
+        "EASTER_W1_WED" to Pair("Ps 105,1-9", "Sławcie Pana, wzywajcie Jego imienia"),
+        "EASTER_W1_THU" to Pair("Ps 8,2.5-9", "O jak przedziwne imię Twoje, Panie"),
+        "EASTER_W1_FRI" to Pair("Ps 118,1-4.22-26", "Kamień wzgardzony stał się fundamentem"),
+        "EASTER_W1_SAT" to Pair("Ps 118,1.14-21", "Pan moją mocą i pieśnią chwały"),
+
         "ORD_W6_MON" to Pair("Ps 119,67-68.71-72.75-76", "Dobrze, że mnie poniżyłeś, bym poznał Twe prawa"),
         "ORD_W6_TUE" to Pair("Ps 29,1-4.9-10", "Pan ześle pokój swojemu ludowi"),
         "ORD_W6_WED" to Pair("Ps 116B,12-14.17-19", "Tobie, mój Boże, złożę ofiarę pochwalną"),
@@ -501,13 +805,13 @@ object LectionaryMap {
         "ORD_W6_TUE" to Pair("Ps 29,1-4.9-10", "Pan ześle pokój swojemu ludowi"),
         "ORD_W6_WED" to Pair("Ps 116B,12-14.17-19", "Tobie, mój Boże, złożę ofiarę pochwalną"),
         "ORD_W6_THU" to Pair("Ps 34,2-9", "Biedak zawołał i Pan go wysłuchał"),
-        "ORD_W6_FRI" to Pair("Ps 112,1-6", "Błogosławiony, kto miłuje Prawo"), // lub Ps 145 zależnie od lekcjonarza rocznego, tutaj standard
-        "ORD_W6_SAT" to Pair("Ps 34,2-9", "Wszyscy zobaczcie, jak nasz Pan jest dobry"), // Lub Ps 119 zależnie od roku
+        "ORD_W6_FRI" to Pair("Ps 112,1-6", "Błogosławiony, kto miłuje Prawo"),
+        "ORD_W6_SAT" to Pair("Ps 34,2-9", "Wszyscy zobaczcie, jak nasz Pan jest dobry"),
 
         // UZUPEŁNIENIE - OKRES ZWYKŁY TYDZIEŃ 7
         "ORD_W7_MON" to Pair("Ps 93,1-2.5", "Pan Bóg króluje, pełen majestatu"),
         "ORD_W7_TUE" to Pair("Ps 37,3-4.18-19.27-28.39-40", "Powierz Panu swą drogę i zaufaj Mu"),
-        "ORD_W7_WED" to Pair("Ps 49,2-3.6-11", "Szczęśliwi ubodzy w duchu, bo ich jest królestwo niebieskie"), // Uwaga: w Twoim spisie brakowało wtorku i środy
+        "ORD_W7_WED" to Pair("Ps 49,2-3.6-11", "Szczęśliwi ubodzy w duchu, bo ich jest królestwo niebieskie"),
         "ORD_W7_THU" to Pair("Ps 49,14-20", "Szczęśliwi ubodzy w duchu, bo ich jest królestwo niebieskie"),
         "ORD_W7_FRI" to Pair("Ps 103,1-4.8.10.13.16-18", "Miłosierny Pan tobie wyświadcza łaskę"),
         "ORD_W7_SAT" to Pair("Ps 141,1-3.9", "Niech moja modlitwa wzniesie się jak kadzidło"),
@@ -515,7 +819,7 @@ object LectionaryMap {
         // PSALMY NA LUTY (Tygodnie 3-5)
         "ORD_W3_MON" to Pair("Ps 98,1-6", "Śpiewajcie Panu pieśń nową"),
         "ORD_W3_TUE" to Pair("Ps 40,2.4.7-10", "Przychodzę, Boże, pełnić Twoją wolę"),
-        "ORD_W3_WED" to Pair("Ps 110,1-4", "Jesteś kapłanem, tak jak Melchizedek"), // Dodaliśmy tekst
+        "ORD_W3_WED" to Pair("Ps 110,1-4", "Jesteś kapłanem, tak jak Melchizedek"),
         "ORD_W3_THU" to Pair("Ps 24,1-6", "Oto lud wierny, szukający Boga"),
         "ORD_W3_FRI" to Pair("Ps 37,3-6.23-24.39-40", "Zbawienie prawych pochodzi od Pana"),
         "ORD_W3_SAT" to Pair("Łk 1,69-75", "Wielbimy Pana, bo swój lud nawiedził"),
@@ -530,7 +834,7 @@ object LectionaryMap {
         "ORD_W5_MON" to Pair("Ps 104,1-2.5-6.10.12.24.35", "Radością Pana dzieła, które stworzył"),
         "ORD_W5_TUE" to Pair("Ps 84,3-5.10-11", "Jak miła, Panie, jest świątynia Twoja"),
         "ORD_W5_WED" to Pair("Ps 37,5-6.30-31.39-40", "Usta sprawiedliwego głoszą mądrość"),
-        "ORD_W5_THU" to Pair("Ps 106,3-4.35-37.40", "Pamiętaj o nas i przyjdź nam z pomocą"), // 13 Lutego
+        "ORD_W5_THU" to Pair("Ps 106,3-4.35-37.40", "Pamiętaj o nas i przyjdź nam z pomocą"),
         "ORD_W5_FRI" to Pair("Ps 81,10-15", "Ja jestem Bogiem, słuchaj mego głosu"),
         "ORD_W5_SAT" to Pair("Ps 106,6-7.19-23", "Pamiętaj o nas i przyjdź nam z pomocą"),
 
@@ -617,7 +921,7 @@ object LectionaryMap {
         "EASTER_SUN_8_A" to Pair("Ps 104,1.24.29-31.34", "Niech zstąpi Duch Twój i odnowi ziemię"),
 
         // OKRES ZWYKŁY A
-        "ORD_SUN_1_A" to Pair("Ps 29,1-4.9-10", "Pan ześle pokój swojemu ludowi"), // Chrzest Pański
+        "ORD_SUN_1_A" to Pair("Ps 29,1-4.9-10", "Pan ześle pokój swojemu ludowi"),
         "ORD_SUN_2_A" to Pair("Ps 40,2.4.7-10", "Przychodzę Boże, pełnić Twoją wolę"),
         "ORD_SUN_3_A" to Pair("Ps 27,1.4.13-14", "Pan moim światłem i zbawieniem moim"),
         "ORD_SUN_4_A" to Pair("Ps 146,6-10", "Ubodzy duchem mają wstęp do nieba"),
@@ -809,7 +1113,7 @@ object LectionaryMap {
         // V Tydzień Wielkiego Postu
         "LENT_W5_MON" to Pair("Ps 23,1-6", "Nic mnie nie trwoży, bo Ty jesteś ze mną"),
         "LENT_W5_TUE" to Pair("Ps 102,2-3.16-21", "Wysłuchaj, Panie, mojego wołania"),
-        "LENT_W5_WED" to Pair("Dn 3,14-20.91-92.95", "Chwalebny jesteś, wiekuisty Boże"), // Pieśń
+        "LENT_W5_WED" to Pair("Dn 3,14-20.91-92.95", "Chwalebny jesteś, wiekuisty Boże"),
         "LENT_W5_THU" to Pair("Ps 105,4-9", "Pan Bóg pamięta o przymierzu swoim"),
         "LENT_W5_FRI" to Pair("Ps 18,2-7", "Pana wzywałem i On mnie wysłuchał"),
         "LENT_W5_SAT" to Pair("Jr 31,10-13", "Pan nas obroni, tak jak pasterz owce"),

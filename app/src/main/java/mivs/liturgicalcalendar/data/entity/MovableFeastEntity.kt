@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "movable_feasts")
 data class MovableFeastEntity(
-    @PrimaryKey val key: String, // np. "ASH_WEDNESDAY", "EASTER_SUNDAY"
+    @PrimaryKey val key: String,
     val gospelSigla: String,
-    val psalmResponse: String
-    // Nazwę i Kolor bierzemy z algorytmu, tu trzymamy tylko teksty
+    val psalmResponse: String,
+    val psalmSigla: String? = null // Nowe pole (może być null dla wstecznej kompatybilności)
 )

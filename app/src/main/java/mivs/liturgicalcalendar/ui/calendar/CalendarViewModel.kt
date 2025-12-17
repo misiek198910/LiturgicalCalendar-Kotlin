@@ -7,10 +7,9 @@ import com.applandeo.materialcalendarview.EventDay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import mivs.liturgicalcalendar.billing.SubscriptionManager // Importuj SubscriptionManager
+import mivs.liturgicalcalendar.billing.SubscriptionManager
 import mivs.liturgicalcalendar.billing.SubscriptionStatus
 import mivs.liturgicalcalendar.data.repository.CalendarRepository
-import mivs.liturgicalcalendar.domain.logic.LiturgicalCalendarCalc
 import mivs.liturgicalcalendar.domain.model.LiturgicalDay
 import mivs.liturgicalcalendar.ui.common.LiturgicalToEventMapper
 import java.time.LocalDate
@@ -18,18 +17,15 @@ import java.util.Calendar
 
 class CalendarViewModel(
     private val repository: CalendarRepository,
-    private val subscriptionManager: SubscriptionManager // Dodajemy manager subskrypcji
+    private val subscriptionManager: SubscriptionManager
 ) : ViewModel() {
 
     private val _events = MutableStateFlow<List<EventDay>>(emptyList())
     val events: StateFlow<List<EventDay>> = _events
-
-    // Stan subskrypcji (obserwowany przez Fragment)
     private val _isPremium = MutableStateFlow(false)
     val isPremium: StateFlow<Boolean> = _isPremium
 
     init {
-        // Obserwujemy LiveData z SubscriptionManager i konwertujemy na StateFlow
         subscriptionManager.subscriptionStatus.observeForever { status ->
             _isPremium.value = (status == SubscriptionStatus.PREMIUM)
         }
@@ -45,8 +41,6 @@ class CalendarViewModel(
             _events.emit(mappedEvents)
         }
     }
-
-    // Szczegóły dnia
     data class CalendarUiState(
         val day: LiturgicalDay,
         val readings: CalendarRepository.DayReadings
@@ -63,19 +57,20 @@ class CalendarViewModel(
         )
 
         viewModelScope.launch {
-            val dayInfo = LiturgicalCalendarCalc.generateDay(date)
+            val dayInfo = repository.getDay(date)
             val readings = repository.getReadingsForDay(dayInfo)
             _uiState.emit(CalendarUiState(dayInfo, readings))
         }
     }
 
-    // Metoda do wywołania zakupu
     fun buyPremium(activity: android.app.Activity) {
         subscriptionManager.productDetails.value?.let { details ->
             subscriptionManager.billingManager.launchPurchaseFlow(activity, details)
         }
     }
 }
+
+
 
 class CalendarViewModelFactory(
     private val repository: CalendarRepository,

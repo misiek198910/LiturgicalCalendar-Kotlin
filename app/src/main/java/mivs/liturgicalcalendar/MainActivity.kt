@@ -25,12 +25,13 @@ import mivs.liturgicalcalendar.billing.SubscriptionManager
 import mivs.liturgicalcalendar.data.repository.CalendarRepository
 import mivs.liturgicalcalendar.ui.calendar.CalendarViewModel
 import mivs.liturgicalcalendar.ui.calendar.CalendarViewModelFactory
+import mivs.liturgicalcalendar.ui.news.NewsActivity
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: CalendarViewModel by viewModels {
         CalendarViewModelFactory(
             repository = CalendarRepository(this),
-            subscriptionManager = mivs.liturgicalcalendar.billing.SubscriptionManager.getInstance(applicationContext)
+            subscriptionManager = SubscriptionManager.getInstance(applicationContext)
         )
     }
 
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         val btnSettings = findViewById<View>(R.id.btnSettings)
         val btnAdsOf = findViewById<View>(R.id.btnRemoveAds)
+        val btnNews = findViewById<View>(R.id.btnNews)
+
 
         btnSettings?.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -61,6 +64,10 @@ class MainActivity : AppCompatActivity() {
 
         btnAdsOf?.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
+        }
+
+        btnNews?.setOnClickListener {
+            startActivity(Intent(this, NewsActivity::class.java))
         }
 
         val billingManager = SubscriptionManager.getInstance(applicationContext).billingManager

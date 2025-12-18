@@ -71,10 +71,10 @@ class CalendarRepository(context: Context) {
 
     // --- LOGIKA POBIERANIA CZYTAŃ ---
     suspend fun getReadingsForDay(dayInfo: LiturgicalDay): DayReadings = withContext(Dispatchers.IO) {
-        println("DEBUG_REPO: ==================================================")
-        println("DEBUG_REPO: ANALIZA DNIA: ${dayInfo.date}")
-        println("DEBUG_REPO: SEZON: ${dayInfo.season} | CYKL Niedz: ${dayInfo.sundayCycle} | CYKL Dni: ${dayInfo.weekdayCycle}") // NOWA LINIA
-        println("DEBUG_REPO: Klucze wejściowe -> LectionaryKey: '${dayInfo.lectionaryKey}' | FeastKey: '${dayInfo.feastKey}'")
+        //println("DEBUG_REPO: ==================================================")
+        //println("DEBUG_REPO: ANALIZA DNIA: ${dayInfo.date}")
+        //println("DEBUG_REPO: SEZON: ${dayInfo.season} | CYKL Niedz: ${dayInfo.sundayCycle} | CYKL Dni: ${dayInfo.weekdayCycle}") // NOWA LINIA
+        //println("DEBUG_REPO: Klucze wejściowe -> LectionaryKey: '${dayInfo.lectionaryKey}' | FeastKey: '${dayInfo.feastKey}'")
 
         var sigla = "Patrz lekcjonarz"
         var psalmDisplay: String? = "Brak danych"
@@ -89,9 +89,9 @@ class CalendarRepository(context: Context) {
         if (dayInfo.feastKey != null && !isFeriaKey && dayInfo.feastKey != "EPIPHANY" && dayInfo.feastKey != "CHRISTMAS_EVE") {
             val movable = movableDao.getFeast(dayInfo.feastKey)
             if (movable != null) {
-                println("DEBUG_REPO: [A] Znaleziono Święto Ruchome w bazie: ${dayInfo.feastKey}")
+                //println("DEBUG_REPO: [A] Znaleziono Święto Ruchome w bazie: ${dayInfo.feastKey}")
                 sigla = movable.gospelSigla
-                println("DEBUG_REPO: [A] Przypisano Ewangelię z movable: $sigla")
+                //println("DEBUG_REPO: [A] Przypisano Ewangelię z movable: $sigla")
 
                 // *** POPRAWKA: Pobieranie treści psalmu dla świąt ruchomych ***
                 val mPsalmSigla = movable.psalmSigla
@@ -103,24 +103,24 @@ class CalendarRepository(context: Context) {
                         psalmFullContent = fullText
                         psalmDisplay = "Psalm: $mPsalmSigla, Ref: ${movable.psalmResponse}"
                         isPsalmFoundInFixed = true
-                        println("DEBUG_REPO: [A] ✅ Znaleziono treść psalmu w bazie: $mPsalmSigla")
+                        //println("DEBUG_REPO: [A] ✅ Znaleziono treść psalmu w bazie: $mPsalmSigla")
                     } else {
                         psalmDisplay = "Psalm: $mPsalmSigla (BRAK W BAZIE)"
                         psalmFullContent = "⚠️ BRAK PSALMU: $mPsalmSigla"
                         // Jeśli brak w bazie, nie ustawiamy flagi na true, żeby spróbował poszukać w mapie (fallback)
                         // Ale dla świąt ruchomych mapa rzadko ma dane, więc to raczej informacja o błędzie.
                         isPsalmFoundInFixed = true
-                        println("DEBUG_REPO: [A] ❌ BRAK treści psalmu w bazie dla: $mPsalmSigla")
+                        //println("DEBUG_REPO: [A] ❌ BRAK treści psalmu w bazie dla: $mPsalmSigla")
                     }
                 } else {
                     // Jeśli nie ma sigli, wyświetl sam refren (stara logika)
                     psalmDisplay = "Psalm: ${movable.psalmResponse}"
                     psalmFullContent = "Refren: ${movable.psalmResponse}"
                     isPsalmFoundInFixed = true
-                    println("DEBUG_REPO: [A] Brak sigli psalmu w movable, używam tylko refrenu.")
+                    //println("DEBUG_REPO: [A] Brak sigli psalmu w movable, używam tylko refrenu.")
                 }
             } else {
-                println("DEBUG_REPO: [A] Mimo feastKey=${dayInfo.feastKey}, nie znaleziono wpisu w tabeli movable_feasts!")
+                //println("DEBUG_REPO: [A] Mimo feastKey=${dayInfo.feastKey}, nie znaleziono wpisu w tabeli movable_feasts!")
             }
         }
 
@@ -128,11 +128,11 @@ class CalendarRepository(context: Context) {
         val fixedFeast = fixedDao.getFeast(dayInfo.date.monthValue, dayInfo.date.dayOfMonth)
 
         if (fixedFeast != null && dayInfo.feastName == fixedFeast.feastName) {
-            println("DEBUG_REPO: [B] Znaleziono Święto Stałe: ${fixedFeast.feastName}")
+            //println("DEBUG_REPO: [B] Znaleziono Święto Stałe: ${fixedFeast.feastName}")
 
             if (fixedFeast.gospelSigla != "Z dnia") {
                 sigla = fixedFeast.gospelSigla
-                println("DEBUG_REPO: [B] Nadpisano Ewangelię z fixed: $sigla")
+                //println("DEBUG_REPO: [B] Nadpisano Ewangelię z fixed: $sigla")
             }
 
             val specificPsalmSigla = fixedFeast.psalmSigla
@@ -143,12 +143,12 @@ class CalendarRepository(context: Context) {
                     psalmDisplay = "Psalm: $specificPsalmSigla, Ref: ${fixedFeast.psalmResponse}"
                     psalmLookupSigla = specificPsalmSigla
                     isPsalmFoundInFixed = true
-                    println("DEBUG_REPO: [B] ✅ Znaleziono treść psalmu fixed: $specificPsalmSigla")
+                    //println("DEBUG_REPO: [B] ✅ Znaleziono treść psalmu fixed: $specificPsalmSigla")
                 } else {
                     psalmDisplay = "Psalm: $specificPsalmSigla (BRAK W BAZIE)"
                     psalmFullContent = "⚠️ BRAK PSALMU: $specificPsalmSigla"
                     isPsalmFoundInFixed = true
-                    println("DEBUG_REPO: [B] ❌ BRAK treści psalmu fixed w bazie: $specificPsalmSigla")
+                    //println("DEBUG_REPO: [B] ❌ BRAK treści psalmu fixed w bazie: $specificPsalmSigla")
                 }
             } else if (fixedFeast.psalmResponse != "Z dnia") {
                 psalmDisplay = "Psalm: ${fixedFeast.psalmResponse}"
@@ -165,7 +165,7 @@ class CalendarRepository(context: Context) {
             // 1. Uzupełnienie Ewangelii z Mapy (jeśli w świętach stałych było "Z dnia" lub "Patrz lekcjonarz")
             if (sigla == "Patrz lekcjonarz" || sigla == "Z dnia") {
                 val mappedGospel = LectionaryMap.getSigla(dayInfo.lectionaryKey)
-                if (mappedGospel != null) println("DEBUG_REPO: [C] ✅ Mapa zwróciła Ewangelię: $mappedGospel")
+                //if (mappedGospel != null) println("DEBUG_REPO: [C] ✅ Mapa zwróciła Ewangelię: $mappedGospel")
                 if (mappedGospel != null) sigla = mappedGospel
             }
 
@@ -175,7 +175,7 @@ class CalendarRepository(context: Context) {
                 if (mappedPsalmData != null) {
                     // ... (tutaj zostaje Twoja stara logika pobierania psalmu) ...
                     val (rawSigla, rawRefrain) = mappedPsalmData
-                    println("DEBUG_REPO: [C] Mapa zwróciła dane Psalmu: Sigla=$rawSigla")
+                    //println("DEBUG_REPO: [C] Mapa zwróciła dane Psalmu: Sigla=$rawSigla")
 
                     val finalRefrain = if (psalmDisplay != "Brak danych" && psalmDisplay?.contains("Ref") == true) {
                         psalmDisplay!!.substringAfter("Ref: ").trim()
@@ -187,27 +187,27 @@ class CalendarRepository(context: Context) {
                     if (!fullContentFromDb.isNullOrEmpty()) {
                         psalmFullContent = fullContentFromDb
                         psalmDisplay = "Psalm: $rawSigla, Ref: $finalRefrain"
-                        println("DEBUG_REPO: [C] ✅ Znaleziono treść psalmu w bazie.")
+                        //println("DEBUG_REPO: [C] ✅ Znaleziono treść psalmu w bazie.")
                     } else {
                         psalmDisplay = "Psalm: $rawSigla (BRAK W BAZIE)"
                         psalmFullContent = "⚠️ BRAK PSALMU: $rawSigla"
-                        println("DEBUG_REPO: [C] ❌ BRAK treści psalmu w bazie dla: $rawSigla")
+                        //println("DEBUG_REPO: [C] ❌ BRAK treści psalmu w bazie dla: $rawSigla")
                     }
                 }
             }
         }
 
-        println("DEBUG_REPO: [FINAL] Szukam pełnego tekstu Ewangelii dla sigli: '$sigla'")
+        //println("DEBUG_REPO: [FINAL] Szukam pełnego tekstu Ewangelii dla sigli: '$sigla'")
         var gospelFullText = findSmartGospelText(sigla)
 
         if (gospelFullText == null && sigla != "Patrz lekcjonarz") {
             gospelFullText = "⚠️ BRAK EWANGELII: $sigla"
-            println("DEBUG_REPO: [FINAL] ❌ BŁĄD KRYTYCZNY: Nie znaleziono tekstu w tabeli 'gospel_texts' dla '$sigla'")
+            //println("DEBUG_REPO: [FINAL] ❌ BŁĄD KRYTYCZNY: Nie znaleziono tekstu w tabeli 'gospel_texts' dla '$sigla'")
         } else if (gospelFullText != null) {
-            println("DEBUG_REPO: [FINAL] ✅ SUKCES: Tekst ewangelii znaleziony.")
+            //println("DEBUG_REPO: [FINAL] ✅ SUKCES: Tekst ewangelii znaleziony.")
         }
 
-        println("DEBUG_REPO: ==================================================")
+        //println("DEBUG_REPO: ==================================================")
 
         return@withContext DayReadings(
             gospelSigla = sigla,
@@ -221,10 +221,10 @@ class CalendarRepository(context: Context) {
 
     // --- METODA POMOCNICZA: CZY NADPISYWAĆ DZIEŃ? ---
     private fun shouldOverwrite(day: LiturgicalDay, fixedRank: Int): Boolean {
+
         // 1. Ochrona Świąt Ruchomych i kluczowych dni
         if (day.feastKey != null) {
-            val isOverwritableKey = day.feastKey == "EPIPHANY" ||
-                    day.feastKey == "CHRISTMAS_EVE"
+            val isOverwritableKey = day.feastKey == "EPIPHANY"
             // Wielki Piątek, Popielec, Wielkanoc itp. są chronione
             if (!isOverwritableKey) return false
         }

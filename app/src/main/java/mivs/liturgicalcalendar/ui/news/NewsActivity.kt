@@ -68,8 +68,8 @@ class NewsActivity : AppCompatActivity() {
                         newsList.add(item)
                     } catch (e: Exception) {
                         // Jeśli dokument ma błąd (np. zły typ daty), ignorujemy go
-                        // Aplikacja się NIE wyłączy, po prostu pominie ten wpis
                         e.printStackTrace()
+                        //Toast.makeText(this, "Błąd w dokumencie ${document.id}: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
                 // ---------------------------------------------

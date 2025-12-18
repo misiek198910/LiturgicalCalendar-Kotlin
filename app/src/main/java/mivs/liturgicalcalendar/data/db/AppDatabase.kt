@@ -18,7 +18,7 @@ import mivs.liturgicalcalendar.data.entity.UserStatusEntity
 
 @Database(
     entities = [FixedFeastEntity::class, GospelEntity::class, MovableFeastEntity::class, PsalmEntity::class, UserStatusEntity::class],
-    version = 80,
+    version = 81,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

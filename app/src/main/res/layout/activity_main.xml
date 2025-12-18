@@ -47,18 +47,33 @@
             app:tint="@color/teal_200"
             android:layout_marginEnd="8dp"/>
 
-        <ImageView
-            android:id="@+id/btnNews"
+        <FrameLayout
+            android:id="@+id/btnNewsContainer"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
-            android:src="@drawable/ic_notifications"
-            android:contentDescription="Nowości i ogłoszenia"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"
-            app:tint="@color/teal_200"
-            android:layout_marginEnd="8dp"/>
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notifications"
+                android:contentDescription="Nowości"
+                app:tint="@color/teal_200" />
+
+            <View
+                android:id="@+id/viewRedDot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/shape_red_dot"
+                android:visibility="gone" />
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/btnSettings"

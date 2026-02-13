@@ -21,6 +21,8 @@ work-version = "2.9.0"
 bom = "33.7.0"
 googleGmsGoogleServices = "4.4.2"
 glide = "4.16.0"
+retrofit = "2.9.0"
+gson = "2.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,13 +45,18 @@ play-services-ads = { module = "com.google.android.gms:play-services-ads", versi
 user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "user_messaging_platform" }
 billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-version" }
-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
+# Retrofit i konwerter
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+# Sam Gson (do adnotacji @SerializedName)
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+# Glide do zdjęć
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

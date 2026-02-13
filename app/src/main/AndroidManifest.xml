@@ -39,9 +39,8 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.news.NewsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:name=".ActivityNews"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

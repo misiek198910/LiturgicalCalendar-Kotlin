@@ -19,7 +19,7 @@
     <string name="notification_hour">Godzina powiadomienia</string>
     <string name="seven_am">07:00</string>
     <string name="about">O aplikacji</string>
-    <string name="loading">Ładowanie...</string>
+    <string name="loading">Ładowanie…</string>
     <string name="status">Twój status:</string>
     <string name="subs2">Subskrypcja Premium</string>
     <string name="text_info1">Wesprzyj rozwój aplikacji i ciesz się dodatkowymi korzyściami:</string>
@@ -28,5 +28,24 @@
     <string name="text_info2">Kup subskrypcję (9,99 zł / miesiąc)</string>
     <string name="premium_version">Wersja Premium</string>
     <string name="read1">EWANGELIA (Czytaj)</string>
+    <string name="subs_trial_button">Zacznij 7 dni za darmo\npotem %s / rok</string>
+    <string name="subs_annual_button">Subskrypcja roczna: %s</string>
+    <string name="subs_buy_button">Wykup subskrypcję</string>
+    <string name="settings_subs">Zarządzaj subskrypcją</string>
+    <string name="load_data">Ładowanie ceny…</string>
+    <string name="no_news">Brak nowych wiadomości</string>
+    <string name="news">Wiadomości</string>
+    <string name="show_shop">Przejdź</string>
+    <string name="subs_monthly_button">Subskrypcja miesięczna: %s</string>
+    <string name="subs_info">Pierwsze 7 dni jest całkowicie darmowe. Możesz zrezygnować w dowolnym momencie w ustawieniach Google Play – jeśli zrobisz to przed upływem tygodnia, nie poniesiesz żadnych kosztów.</string>
+    <string name="billing_error_canceled">Anulowano zakup.</string>
+    <string name="billing_error_generic">Błąd bilingu: %1$s</string>
+    <string name="billing_error_offer_not_found">Nie znaleziono oferty dla: %1$s</string>
+    <string name="subs_status_active">Twoja subskrypcja jest AKTYWNA</string>
+    <string name="subs_status_none">Brak aktywnej subskrypcji</string>
+    <string name="subs_status_checking">Sprawdzanie statusu…</string>
+    <string name="error_server">Błąd serwera: %1$d</string>
+    <string name="error_connection">Błąd połączenia</string>
+
 
 </resources>

@@ -17,7 +17,7 @@ interface MovableFeastDao {
     @Query("SELECT * FROM movable_feasts WHERE `key` = :key")
     suspend fun getFeast(key: String): MovableFeastEntity?
 
-    // --- Metody pomocnicze (opcjonalne, jeśli ich używasz np. przy inicjalizacji bazy) ---
+    
 
     @Query("SELECT * FROM movable_feasts")
     suspend fun getAllFeasts(): List<MovableFeastEntity>

@@ -11,7 +11,7 @@ import java.util.Locale
 
 object LiturgicalCalendarCalc {
 
-    // --- FUNKCJE POMOCNICZE ---
+    
 
     private fun getFeriaCycle(yearCycle: Char): Int {
         return when (yearCycle) {
@@ -40,7 +40,7 @@ object LiturgicalCalendarCalc {
         }
     }
 
-    // --- LOGIKA GŁÓWNA ---
+    
 
     fun generateDay(date: LocalDate): LiturgicalDay {
         val currentYear = date.year
@@ -99,7 +99,7 @@ object LiturgicalCalendarCalc {
         var feastKey: String? = null
         var colorCode = "g"
 
-        // Ustawianie kolorów
+        
         colorCode = when(season) {
             LiturgicalSeason.ADVENT -> "v"
             LiturgicalSeason.LENT -> "v"
@@ -109,7 +109,7 @@ object LiturgicalCalendarCalc {
             else -> "g"
         }
 
-        // A. Święta Ruchome
+        
         if (date.month == Month.DECEMBER && date.dayOfMonth == 24) {
             feastKey = "CHRISTMAS_EVE"
             colorCode = "w"
@@ -155,7 +155,7 @@ object LiturgicalCalendarCalc {
             }
         }
 
-        // 4. USTALANIE NAZW DNI
+        
         if (feastName == null) {
             if (date.month == Month.DECEMBER && date.dayOfMonth == 24) {
                 feastName = "Wigilia Bożego Narodzenia"
@@ -214,7 +214,7 @@ object LiturgicalCalendarCalc {
                     else if (date.isEqual(easter.minusDays(2))) feastName = "Wielki Piątek: Męki Pańskiej"
                     else if (date.isEqual(easter.minusDays(1))) feastName = "Wielka Sobota"
                 } else if (season == LiturgicalSeason.LENT) {
-                    // --- DEBUGOWANIE WIELKIEGO POSTU ---
+                    
                     val daysToEaster = ChronoUnit.DAYS.between(date, easter)
                     val daysFromAsh = ChronoUnit.DAYS.between(ashWednesday, date)
                     val weekNum = (daysFromAsh / 7).toInt() + 1
@@ -236,7 +236,7 @@ object LiturgicalCalendarCalc {
                         println("DEBUG_LENT: Wykryto ZWYKŁY tydzień postu dla $date")
                         feastName = "${getPolishDayName(dow)} $weekNum. Tygodnia Wielkiego Postu"
                     }
-                    // -----------------------------------
+                    
                 } else if (season == LiturgicalSeason.EASTER) {
                     val daysFromEaster = ChronoUnit.DAYS.between(easter, date)
                     val weekNum = (daysFromEaster / 7).toInt() + 1
@@ -296,7 +296,7 @@ object LiturgicalCalendarCalc {
                     if (daysToEaster == 2L) return "GOOD_FRIDAY"
                     if (daysToEaster == 1L) return "HOLY_SATURDAY"
 
-                    // Klucze dla Wielkiego Tygodnia
+                    
                     if (daysToEaster < 7) {
                         return "HOLY_WEEK_$dow"
                     }

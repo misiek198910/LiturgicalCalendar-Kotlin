@@ -9,18 +9,18 @@ object CycleCalculator {
     enum class WeekdayCycle { I, II }
 
     fun calculateSundayCycle(date: LocalDate, season: LiturgicalSeason): SundayCycle {
-        // Obliczamy "rok liturgiczny". Zaczyna się on w 1. Niedzielę Adwentu poprzedniego roku kalendarzowego.
-        // Np. Adwent 2025 zaczyna rok liturgiczny 2026.
+        
+        
 
         var liturgicalYear = date.year
 
-        // Jeśli data jest w Adwencie (lub po nim w grudniu), to należy już do kolejnego roku liturgicznego
-        // Uproszczenie: Jeśli miesiąc to grudzień lub koniec listopada i sezon to ADWENT -> rok + 1
+        
+        
         if (date.monthValue >= 11 && season == LiturgicalSeason.ADVENT) {
             liturgicalYear += 1
         }
 
-        // Algorytm: Reszta z dzielenia przez 3
+        
         return when (liturgicalYear % 3) {
             1 -> SundayCycle.A
             2 -> SundayCycle.B

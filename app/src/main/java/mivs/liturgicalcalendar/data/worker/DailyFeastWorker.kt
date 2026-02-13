@@ -13,8 +13,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import mivs.liturgicalcalendar.R // Upewnij się, że importujesz R ze swojego pakietu
-import mivs.liturgicalcalendar.SettingsActivity // Do kliknięcia w powiadomienie (lub MainActivity)
+import mivs.liturgicalcalendar.R 
+import mivs.liturgicalcalendar.SettingsActivity 
 import mivs.liturgicalcalendar.data.repository.CalendarRepository
 import mivs.liturgicalcalendar.domain.logic.LiturgicalCalendarCalc
 import java.time.LocalDate
@@ -25,26 +25,26 @@ class DailyFeastWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        // 1. Inicjalizacja Repo
+        
         val repository = CalendarRepository(applicationContext)
         val today = LocalDate.now()
 
-        // 2. Pobranie danych o dniu
+        
         val dayInfo = LiturgicalCalendarCalc.generateDay(today)
         val readings = repository.getReadingsForDay(dayInfo)
 
-        // 3. Budowanie treści
-        // Tytuł: Nazwa święta lub "Dzień powszedni"
+        
+        
         val title = readings.dbFeastName ?: dayInfo.feastName ?: "Liturgia dnia"
 
-        // Treść: Ewangelia (skrót) lub Psalm
+        
         val content = if (!readings.gospelFullText.isNullOrEmpty()) {
             "Ewangelia: " + readings.gospelFullText.take(90) + "..."
         } else {
             readings.psalmResponse
         }
 
-        // 4. Wysłanie powiadomienia
+        
         sendNotification(title, content)
 
         return Result.success()
@@ -53,14 +53,14 @@ class DailyFeastWorker(
     private fun sendNotification(title: String, message: String) {
         val channelId = "daily_word_channel"
 
-        // Sprawdzenie uprawnień (dla Androida 13+)
+        
         if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             return
         }
 
         createNotificationChannel(channelId)
 
-        // Co się stanie po kliknięciu? Otwieramy SettingsActivity (lub zmień na MainActivity)
+        
         val intent = Intent(applicationContext, SettingsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -69,10 +69,10 @@ class DailyFeastWorker(
         )
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
-            .setSmallIcon(R.drawable.ic_notifications) // Twoja biała ikona!
+            .setSmallIcon(R.drawable.ic_notifications) 
             .setContentTitle(title)
             .setContentText(message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) // Rozwija długi tekst
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) 
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

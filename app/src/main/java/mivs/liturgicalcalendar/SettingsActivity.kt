@@ -23,6 +23,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -43,18 +44,12 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
 
     private lateinit var billingManager: BillingManager
     private lateinit var preferencesManager: PreferencesManager
-
-    // Widoki
     private lateinit var adContainerLayout: FrameLayout
     private lateinit var adContainer: FrameLayout
-
-    // Karta Premium
     private lateinit var cardPremium: CardView
     private lateinit var imgPremiumIcon: ImageView
     private lateinit var txtPremiumTitle: TextView
     private lateinit var txtPremiumSubtitle: TextView
-
-    // Powiadomienia i Picker
     private lateinit var switchNotification: SwitchMaterial
     private lateinit var iconLock: ImageView
     private lateinit var layoutNotificationOption: RelativeLayout
@@ -81,6 +76,7 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
+        changeNaviBarColor();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -93,9 +89,8 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
 
         initViews()
         setupListeners()
-        updateTimeDisplay() // Wyświetl zapisaną godzinę
+        updateTimeDisplay()
 
-        // OBSERWACJA PREMIUM
         billingManager.isPremium.observe(this) { isPremium ->
             isPremiumUser = isPremium
             updatePremiumUI(isPremium)
@@ -123,20 +118,26 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
 
         switchNotification.isChecked = preferencesManager.areNotificationsEnabled
 
-        // Pokaż/Ukryj picker w zależności od stanu włącznika
         layoutTimePicker.visibility = if (preferencesManager.areNotificationsEnabled) View.VISIBLE else View.GONE
 
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
     }
 
+    private fun changeNaviBarColor() {
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        // 1. Wyłączamy jasny pasek nawigacji i włączamy ciemny
+        controller.isAppearanceLightNavigationBars = false
+        controller.isAppearanceLightStatusBars = false
+        @Suppress("DEPRECATION")
+        window.navigationBarColor = android.graphics.Color.BLACK
+    }
+
     private fun setupListeners() {
-        // Kliknięcie w kartę Premium -> Otwiera Subskrypcje (TO ZOSTAWIAMY)
         cardPremium.setOnClickListener { openSubscriptionScreen() }
 
-        // Kliknięcie w rząd powiadomień (Kłódka)
         layoutNotificationOption.setOnClickListener {
             if (!isPremiumUser) {
-                // ZMIANA 1: Tylko Toast, brak przejścia do innej aktywności
                 Toast.makeText(this, "Funkcja dostępna w wersji Premium", Toast.LENGTH_SHORT).show()
             } else {
                 switchNotification.toggle()
@@ -144,18 +145,17 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
             }
         }
 
-        // Kliknięcie bezpośrednio w suwak
         switchNotification.setOnClickListener {
             if (!isPremiumUser) {
                 switchNotification.isChecked = false
-                // ZMIANA 1: Tylko Toast, brak przejścia do innej aktywności
+
                 Toast.makeText(this, "Funkcja dostępna w wersji Premium", Toast.LENGTH_SHORT).show()
             } else {
                 handleNotificationToggle(switchNotification.isChecked)
             }
         }
 
-        // Listener Pickera Godziny
+        
         layoutTimePicker.setOnClickListener {
             showTimePickerDialog()
         }
@@ -165,37 +165,26 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
             startActivity(intent)
         }
     }
-
-    // --- ZARZĄDZANIE WYGLĄDEM PREMIUM ---
     private fun updatePremiumUI(isPremium: Boolean) {
         if (isPremium) {
-            // ZMIANA TREŚCI KARTY
             cardPremium.visibility = View.VISIBLE
-            imgPremiumIcon.setImageResource(R.drawable.ic_lock_open) // Kłódka otwarta
+            imgPremiumIcon.setImageResource(R.drawable.ic_lock_open) 
             txtPremiumSubtitle.text = "Zarządzaj subskrypcją"
-
-            // ODBLOKOWANIE UI
             iconLock.visibility = View.GONE
             switchNotification.visibility = View.VISIBLE
 
-            // ZMIANA 2: Odśwież widoczność pickera godziny
-            // Jeśli użytkownik ma włączone powiadomienia, pokaż picker od razu po wykryciu Premium
             layoutTimePicker.visibility = if (switchNotification.isChecked) View.VISIBLE else View.GONE
 
         } else {
-            // TREŚĆ DLA FREE
             cardPremium.visibility = View.VISIBLE
-            imgPremiumIcon.setImageResource(R.drawable.ic_lock) // Kłódka zamknięta
+            imgPremiumIcon.setImageResource(R.drawable.ic_lock) 
             txtPremiumSubtitle.text = "Kliknij, aby usunąć reklamy i włączyć Słowo"
 
-            // ZABLOKOWANIE UI
             iconLock.visibility = View.VISIBLE
             switchNotification.visibility = View.GONE
             layoutTimePicker.visibility = View.GONE
         }
     }
-
-    // --- LOGIKA CZASU (PICKER) ---
     private fun showTimePickerDialog() {
         val currentHour = preferencesManager.notificationHour
         val currentMinute = preferencesManager.notificationMinute
@@ -220,8 +209,6 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
         txtTimeDisplay.text = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
     }
 
-    // --- LOGIKA POWIADOMIEŃ ---
-
     private fun handleNotificationToggle(isChecked: Boolean) {
         if (isChecked) {
             checkAndEnableNotifications()
@@ -244,14 +231,14 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
 
     private fun enableNotifications() {
         preferencesManager.areNotificationsEnabled = true
-        layoutTimePicker.visibility = View.VISIBLE // Pokaż picker
+        layoutTimePicker.visibility = View.VISIBLE 
         scheduleWorker()
         Toast.makeText(this, "Powiadomienia włączone", Toast.LENGTH_SHORT).show()
     }
 
     private fun disableNotifications() {
         preferencesManager.areNotificationsEnabled = false
-        layoutTimePicker.visibility = View.GONE // Ukryj picker
+        layoutTimePicker.visibility = View.GONE 
         WorkManager.getInstance(this).cancelUniqueWork("DailyFeastWork")
     }
 
@@ -291,8 +278,6 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
     private fun openSubscriptionScreen() {
         startActivity(Intent(this, SubscriptionActivity::class.java))
     }
-
-    // --- REKLAMY ---
     private fun handleAds(isPremium: Boolean) {
         if (isPremium) {
             if (adView != null) {
@@ -324,8 +309,7 @@ class SettingsActivity : AppCompatActivity(), BillingManager.BillingManagerListe
         adView.loadAd(AdRequest.Builder().build())
     }
 
-    private val adSize: AdSize
-        get() {
+    private val adSize: AdSize get() {
             val display = windowManager.defaultDisplay
             val outMetrics = DisplayMetrics()
             display.getMetrics(outMetrics)

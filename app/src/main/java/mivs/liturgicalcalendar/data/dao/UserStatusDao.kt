@@ -1,4 +1,4 @@
-// UserStatusDao.kt
+
 package mivs.liturgicalcalendar.data.dao
 
 import androidx.room.Dao
@@ -10,7 +10,7 @@ import mivs.liturgicalcalendar.data.entity.UserStatusEntity
 @Dao
 interface UserStatusDao {
 
-    // Używamy REPLACE, żeby zawsze nadpisywać jedyny wiersz
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(status: UserStatusEntity)
 

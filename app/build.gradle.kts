@@ -23,8 +23,8 @@ android {
         applicationId = "mivs.kalendarz_liturgiczny"
         minSdk = 27
         targetSdk = 36
-        versionCode = 41
-        versionName = "2.1.0"
+        versionCode = 45
+        versionName = "2.1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -51,8 +51,8 @@ android {
             buildConfigField("String", "AD_BANNER_ID", "\"$bannerId\"")
             buildConfigField("String", "AD_START_UNIT_ID", "\"$adStartId\"")
 
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            //isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -60,7 +60,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            // Testowe ID od Google
+
             buildConfigField("String", "AD_BANNER_ID", "\"ca-app-pub-3940256099942544/6300978111\"")
             buildConfigField("String", "AD_START_UNIT_ID", "\"ca-app-pub-3940256099942544/3419835294\"")
         }
@@ -80,7 +80,6 @@ android {
 
 dependencies {
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.ktx)
@@ -105,4 +104,11 @@ dependencies {
     implementation(libs.user.messaging.platform)
     implementation(libs.billing)
     implementation(libs.glide)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

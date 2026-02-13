@@ -11,10 +11,10 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putBoolean("notifications_enabled", value).apply()
 
     var notificationHour: Int
-        get() = prefs.getInt("notification_hour", 7) // Domyślnie 7:00
+        get() = prefs.getInt("notification_hour", 7) 
         set(value) = prefs.edit().putInt("notification_hour", value).apply()
 
     var notificationMinute: Int
-        get() = prefs.getInt("notification_minute", 0) // Domyślnie :00
+        get() = prefs.getInt("notification_minute", 0) 
         set(value) = prefs.edit().putInt("notification_minute", value).apply()
 }

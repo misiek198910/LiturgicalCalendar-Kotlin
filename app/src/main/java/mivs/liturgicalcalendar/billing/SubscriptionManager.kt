@@ -2,17 +2,21 @@ package mivs.liturgicalcalendar.billing
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import com.android.billingclient.api.ProductDetails
 
 class SubscriptionManager private constructor(context: Context) {
-
-    // Inicjalizujemy BillingManager
+    
     val billingManager: BillingManager = BillingManager.getInstance(context)
 
-    // Wystawiamy status subskrypcji na zewnątrz
+    val isPremium: LiveData<Boolean> = billingManager.isPremium
     val subscriptionStatus: LiveData<SubscriptionStatus> = billingManager.subscriptionStatus
+    val productDetails: LiveData<ProductDetails?> = billingManager.productDetails
+    val isPremiumValue: Boolean
+        get() = billingManager.isPremium.value ?: false
 
-    // Wystawiamy szczegóły produktu (np. cenę do wyświetlenia)
-    val productDetails = billingManager.productDetails
+    fun getFormattedPrice(context: Context, productDetails: ProductDetails?, planOrOfferId: String): CharSequence {
+        return billingManager.getPlanOfferInfo(context, productDetails, planOrOfferId)
+    }
 
     companion object {
         @Volatile
@@ -20,9 +24,10 @@ class SubscriptionManager private constructor(context: Context) {
 
         fun getInstance(context: Context): SubscriptionManager {
             return INSTANCE ?: synchronized(this) {
-                val instance = SubscriptionManager(context.applicationContext)
-                INSTANCE = instance
-                instance
+
+                INSTANCE ?: SubscriptionManager(context.applicationContext).also {
+                    INSTANCE = it
+                }
             }
         }
     }

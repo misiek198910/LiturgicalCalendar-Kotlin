@@ -12,7 +12,7 @@
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="56dp"
+        android:minHeight="48dp"
         android:background="#1A1A1A"
         android:elevation="4dp"
         android:gravity="center_vertical"
@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="sans-serif-medium"
-            android:paddingEnd="0dp"
             android:paddingStart="16dp"
             android:text="@string/news"
             android:textColor="@color/teal_200"
@@ -46,15 +45,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNews"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="16dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/adContainerLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/adContainerLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topToolbar" />
 
@@ -71,21 +70,20 @@
 
     <FrameLayout
         android:id="@+id/adContainerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
-        android:minHeight="50dp"
-        android:paddingTop="4dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:minWidth="50dp"
+        android:visibility="invisible"  app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/topToolbar">
 
         <FrameLayout
             android:id="@+id/adContainer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:paddingHorizontal="4dp" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

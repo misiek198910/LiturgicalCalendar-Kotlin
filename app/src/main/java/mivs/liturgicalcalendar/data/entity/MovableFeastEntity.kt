@@ -8,5 +8,5 @@ data class MovableFeastEntity(
     @PrimaryKey val key: String,
     val gospelSigla: String,
     val psalmResponse: String,
-    val psalmSigla: String? = null // Nowe pole (może być null dla wstecznej kompatybilności)
+    val psalmSigla: String? = null 
 )

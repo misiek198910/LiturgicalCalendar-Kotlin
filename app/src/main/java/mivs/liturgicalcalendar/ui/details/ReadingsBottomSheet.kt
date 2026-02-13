@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import mivs.liturgicalcalendar.R
 
@@ -20,11 +21,12 @@ class ReadingsBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme)
 
         val titleText: TextView = view.findViewById(R.id.titleText)
         val contentText: TextView = view.findViewById(R.id.contentText)
 
-        // Pobieramy dane z argumentów
+        
         val sigla = arguments?.getString(ARG_SIGLA)
         val content = arguments?.getString(ARG_CONTENT)
 
@@ -38,11 +40,21 @@ class ReadingsBottomSheet : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
         val dialog = dialog as? com.google.android.material.bottomsheet.BottomSheetDialog
+        val window = dialog?.window
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
         bottomSheet?.let {
             val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(it)
             behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
+        }
+
+        window?.let { win ->
+            val controller = androidx.core.view.WindowInsetsControllerCompat(win, win.decorView)
+            controller.isAppearanceLightStatusBars = false
+            controller.isAppearanceLightNavigationBars = false
+            @Suppress("DEPRECATION")
+            window.navigationBarColor = android.graphics.Color.BLACK
         }
     }
 

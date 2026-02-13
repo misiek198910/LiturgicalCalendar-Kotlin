@@ -63,14 +63,7 @@ class CalendarViewModel(
         }
     }
 
-    fun buyPremium(activity: android.app.Activity) {
-        subscriptionManager.productDetails.value?.let { details ->
-            subscriptionManager.billingManager.launchPurchaseFlow(activity, details)
-        }
-    }
 }
-
-
 
 class CalendarViewModelFactory(
     private val repository: CalendarRepository,

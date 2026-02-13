@@ -8,7 +8,7 @@ import mivs.liturgicalcalendar.data.entity.FixedFeastEntity
 
 @Dao
 interface FixedFeastDao {
-    // Pobierz święto dla konkretnego dnia i miesiąca
+    
     @Query("SELECT * FROM fixed_feasts WHERE month = :month AND day = :day")
     suspend fun getFeast(month: Int, day: Int): FixedFeastEntity?
 

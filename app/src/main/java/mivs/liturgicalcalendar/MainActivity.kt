@@ -23,14 +23,26 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.launch
 import mivs.liturgicalcalendar.billing.SubscriptionManager
+import mivs.liturgicalcalendar.ui.calendar.CalendarViewModel
+import mivs.liturgicalcalendar.ui.calendar.CalendarViewModelFactory
 
 class MainActivity : AppCompatActivity() {
+    private val calendarViewModel: CalendarViewModel by lazy {
 
+        val repo = mivs.liturgicalcalendar.data.repository.CalendarRepository(applicationContext)
+        val subManager = SubscriptionManager.getInstance(this)
+        
+        androidx.lifecycle.ViewModelProvider(
+            this,
+            CalendarViewModelFactory(repo, subManager)
+        )[CalendarViewModel::class.java]
+    }
+
+    private var mInterstitialAd: com.google.android.gms.ads.interstitial.InterstitialAd? = null
     private lateinit var redDot: View
     private var adContainerLayout: FrameLayout? = null
     private var adContainer: FrameLayout? = null
     private var adView: AdView? = null
-
     private var latestNewsTimestamp: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,10 +68,12 @@ class MainActivity : AppCompatActivity() {
 
         btnSettings?.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+            calendarViewModel.isInternalNavigation = true
         }
 
         btnAdsOf?.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
+            calendarViewModel.isInternalNavigation = true
         }
 
         btnNewsContainer.setOnClickListener {
@@ -73,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             prefs.edit { putLong("last_checked_timestamp", timeToSave) }
 
             startActivity(Intent(this, ActivityNews::class.java))
+            calendarViewModel.isInternalNavigation = true
         }
 
         val billingManager = SubscriptionManager.getInstance(applicationContext).billingManager
@@ -85,6 +100,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupAdsLogic()
+
+        loadInterstitialAd()
+
+        // 2. Obsługa przycisku BACK (zamiast starego onBackPressed)
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Sprawdzamy czy użytkownik NIE jest premium
+                if (mInterstitialAd != null && calendarViewModel.isPremium.value == false) {
+                    calendarViewModel.triggerExitAd {
+                        mInterstitialAd?.show(this@MainActivity)
+                        finish()
+                    }
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
     }
 
     private fun changeNaviBarColor() {
@@ -186,6 +219,29 @@ class MainActivity : AppCompatActivity() {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
     }
 
+    private fun loadInterstitialAd() {
+        val adRequest = AdRequest.Builder().build()
+        val adId = "ca-app-pub-8612826840770530/3213905982"
+
+        com.google.android.gms.ads.interstitial.InterstitialAd.load(this, adId, adRequest,
+            object : com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: com.google.android.gms.ads.interstitial.InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+
+                    mInterstitialAd?.fullScreenContentCallback = object : com.google.android.gms.ads.FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            mInterstitialAd = null
+                            loadInterstitialAd()
+                        }
+                    }
+                }
+
+                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                    mInterstitialAd = null
+                }
+            })
+    }
+
     private fun setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -203,6 +259,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         adView?.resume()
         checkNewsViaApi()
+        calendarViewModel.triggerResumeAd {
+            mInterstitialAd?.show(this)
+        }
     }
 
     override fun onDestroy() {

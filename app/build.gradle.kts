@@ -23,8 +23,8 @@ android {
         applicationId = "mivs.kalendarz_liturgiczny"
         minSdk = 27
         targetSdk = 36
-        versionCode = 45
-        versionName = "2.1.4"
+        versionCode = 46
+        versionName = "2.1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

@@ -17,9 +17,27 @@ import java.util.Calendar
 
 class CalendarViewModel(
     private val repository: CalendarRepository,
-    private val subscriptionManager: SubscriptionManager
-) : ViewModel() {
+    private val subscriptionManager: SubscriptionManager) : ViewModel() {
 
+    private var adShownOnExit = false
+    var isInternalNavigation = false
+
+    fun triggerExitAd(onShowAd: () -> Unit) {
+        // Reklama tylko dla darmowych użytkowników
+        if (_isPremium.value == false) {
+            adShownOnExit = true
+            onShowAd()
+        }
+    }
+
+    fun triggerResumeAd(onShowAd: () -> Unit) {
+        if (_isPremium.value == false && !adShownOnExit && !isInternalNavigation) {
+            onShowAd()
+        }
+        // Zawsze resetujemy flagi
+        adShownOnExit = false
+        isInternalNavigation = false
+    }
     private val _events = MutableStateFlow<List<EventDay>>(emptyList())
     val events: StateFlow<List<EventDay>> = _events
     private val _isPremium = MutableStateFlow(false)

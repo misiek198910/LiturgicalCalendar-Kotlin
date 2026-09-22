@@ -2,18 +2,23 @@ package mivs.liturgicalcalendar.billing
 
 import android.app.Activity
 import android.content.Context
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClient.ProductType
+import kotlinx.coroutines.*
 import mivs.liturgicalcalendar.R
 import mivs.liturgicalcalendar.data.db.AppDatabase
 import mivs.liturgicalcalendar.data.entity.UserStatusEntity
-import kotlinx.coroutines.*
-import androidx.core.graphics.toColorInt
 
 class BillingManager private constructor(context: Context) {
+
+    enum class SubscriptionStatus {
+        CHECKING, PREMIUM, NON_PREMIUM
+    }
+
     private val billingClient: BillingClient
     private val database = AppDatabase.getDatabase(context.applicationContext)
     private val dao = database.userStatusDao()
@@ -27,6 +32,7 @@ class BillingManager private constructor(context: Context) {
 
     private val _productDetails = MutableLiveData<ProductDetails?>()
     val productDetails: LiveData<ProductDetails?> = _productDetails
+
     private val appContext = context.applicationContext
 
     interface BillingManagerListener {
@@ -41,10 +47,8 @@ class BillingManager private constructor(context: Context) {
         if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) { handlePurchase(purchase) }
         } else if (billingResult.responseCode == BillingResponseCode.USER_CANCELED) {
-
             listener?.onPurchaseError(appContext.getString(R.string.billing_error_canceled))
         } else {
-
             listener?.onPurchaseError(appContext.getString(R.string.billing_error_generic, billingResult.responseCode.toString()))
         }
     }
@@ -52,7 +56,6 @@ class BillingManager private constructor(context: Context) {
     init {
         val pendingPurchasesParams = PendingPurchasesParams.newBuilder()
             .enableOneTimeProducts()
-            .enablePrepaidPlans()
             .build()
 
         billingClient = BillingClient.newBuilder(context.applicationContext)
@@ -84,7 +87,7 @@ class BillingManager private constructor(context: Context) {
         })
     }
 
-    fun queryPurchasesAsync() {
+    fun queryPurchasesAsync(isRetry: Boolean = false) {
         if (!billingClient.isReady) return
         billingClient.queryPurchasesAsync(
             QueryPurchasesParams.newBuilder().setProductType(ProductType.SUBS).build()
@@ -99,7 +102,24 @@ class BillingManager private constructor(context: Context) {
                         if (!purchase.isAcknowledged) handlePurchase(purchase)
                     }
                 }
-                updateLocalStatus(hasPremium, token)
+
+                scope.launch {
+                    // Lokalny cache Play Billing bywa chwilowo pusty tuż po starcie usługi
+                    // (np. zanim Play Store zdąży zsynchronizować się w tle). Jeden "pusty"
+                    // wynik potrafił bezpowrotnie skasować premium z Room (a tym samym
+                    // z widgetu) mimo naprawdę aktywnej subskrypcji — zanim uznamy, że
+                    // subskrypcja faktycznie wygasła, potwierdzamy to drugim zapytaniem.
+                    // Sprawdzamy trwały stan w Room, a nie `_isPremium.value` — ta LiveData
+                    // startuje zawsze od `false` przy starcie procesu i potrafiła jeszcze
+                    // nie zdążyć się zaktualizować z Room, przez co ta ochrona nie działała.
+                    val wasPremiumInDb = dao.getStatus()?.isPremium == true
+                    if (!hasPremium && wasPremiumInDb && !isRetry) {
+                        delay(2000)
+                        queryPurchasesAsync(isRetry = true)
+                    } else {
+                        updateLocalStatus(hasPremium, token)
+                    }
+                }
             }
         }
     }
@@ -119,13 +139,21 @@ class BillingManager private constructor(context: Context) {
                 .setProductType(ProductType.SUBS)
                 .build()
         )
-        billingClient.queryProductDetailsAsync(QueryProductDetailsParams.newBuilder().setProductList(productList).build()) { _, details ->
-            if (details.isNotEmpty()) _productDetails.postValue(details[0])
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        billingClient.queryProductDetailsAsync(params)
+        { billingResult, queryProductDetailsResult ->
+            val productDetailsList = queryProductDetailsResult.productDetailsList
+
+            if (billingResult.responseCode == BillingResponseCode.OK && !productDetailsList.isNullOrEmpty()) {
+                _productDetails.postValue(productDetailsList[0])
+            }
         }
     }
 
     fun launchPurchaseFlow(activity: Activity, productDetailsToPurchase: ProductDetails, basePlanId: String) {
-
         val offers = productDetailsToPurchase.subscriptionOfferDetails?.filter {
             it.basePlanId == basePlanId
         }
@@ -170,7 +198,6 @@ class BillingManager private constructor(context: Context) {
     }
 
     fun getPlanOfferInfo(context: Context, productDetails: ProductDetails?, basePlanId: String): CharSequence {
-
         val offers = productDetails?.subscriptionOfferDetails
 
         val offerWithTrial = offers?.find {
@@ -211,9 +238,7 @@ class BillingManager private constructor(context: Context) {
         }
 
         const val SKU_REMOVE_ADS_YEAR = "remove_ads_for_year"
-
         const val BASE_PLAN_YEARLY = "kalendarz-liturgiczny-year"
         const val BASE_PLAN_MONTHLY = "kalendarz-liturgiczny-month"
-
     }
 }

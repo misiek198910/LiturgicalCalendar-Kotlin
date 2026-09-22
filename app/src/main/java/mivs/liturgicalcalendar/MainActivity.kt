@@ -25,8 +25,9 @@ import kotlinx.coroutines.launch
 import mivs.liturgicalcalendar.billing.SubscriptionManager
 import mivs.liturgicalcalendar.ui.calendar.CalendarViewModel
 import mivs.liturgicalcalendar.ui.calendar.CalendarViewModelFactory
+import mivs.liturgicalcalendar.ui.details.OnReadingsBottomSheetClosedListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnReadingsBottomSheetClosedListener {
     private val calendarViewModel: CalendarViewModel by lazy {
 
         val repo = mivs.liturgicalcalendar.data.repository.CalendarRepository(applicationContext)
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private var adContainer: FrameLayout? = null
     private var adView: AdView? = null
     private var latestNewsTimestamp: Long = 0
+    private var readingsBottomSheetCloseCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,12 +70,10 @@ class MainActivity : AppCompatActivity() {
 
         btnSettings?.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
-            calendarViewModel.isInternalNavigation = true
         }
 
         btnAdsOf?.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
-            calendarViewModel.isInternalNavigation = true
         }
 
         btnNewsContainer.setOnClickListener {
@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
             prefs.edit { putLong("last_checked_timestamp", timeToSave) }
 
             startActivity(Intent(this, ActivityNews::class.java))
-            calendarViewModel.isInternalNavigation = true
         }
 
         val billingManager = SubscriptionManager.getInstance(applicationContext).billingManager
@@ -259,7 +258,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         adView?.resume()
         checkNewsViaApi()
-        calendarViewModel.triggerResumeAd {
+    }
+
+    override fun onReadingsBottomSheetClosed() {
+        readingsBottomSheetCloseCount++
+        if (readingsBottomSheetCloseCount % 2 == 0 && calendarViewModel.isPremium.value == false) {
             mInterstitialAd?.show(this)
         }
     }

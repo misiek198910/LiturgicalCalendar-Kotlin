@@ -47,5 +47,10 @@
     <string name="error_server">Błąd serwera: %1$d</string>
     <string name="error_connection">Błąd połączenia</string>
 
+    <string name="widget_calendar_name">Kalendarz Liturgiczny</string>
+    <string name="widget_calendar_description">Pokazuje dzisiejszy dzień liturgiczny, kolor szat i skrót czytań.</string>
+    <string name="widget_calendar_premium_name">Kalendarz Liturgiczny Premium</string>
+    <string name="widget_calendar_premium_description">Dzień liturgiczny, cytat z Ewangelii i status wstrzemięźliwości. Wymaga aktywnej subskrypcji Premium.</string>
+    <string name="subs_benefit_widget">Widget Premium</string>
 
 </resources>

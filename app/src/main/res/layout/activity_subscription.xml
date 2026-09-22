@@ -92,6 +92,17 @@
                 android:gravity="center_vertical"
                 app:drawableStartCompat="@drawable/ic_check" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:text="@string/subs_benefit_widget"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                app:drawableStartCompat="@drawable/ic_check" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

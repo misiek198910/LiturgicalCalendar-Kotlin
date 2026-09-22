@@ -87,6 +87,16 @@
                     android:text="@string/notification"
                     android:textColor="@color/white"
                     android:textSize="14sp"
+                    android:layout_marginEnd="16dp"
+                    app:drawableStartCompat="@drawable/ic_check" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/subs_benefit_widget"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
                     app:drawableStartCompat="@drawable/ic_check" />
             </LinearLayout>
 

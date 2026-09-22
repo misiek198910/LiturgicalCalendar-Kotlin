@@ -23,7 +23,13 @@ object LiturgicalCalendarCalc {
 
     private fun calculateFirstAdventSunday(year: Int): LocalDate {
         val christmas = LocalDate.of(year, Month.DECEMBER, 25)
-        val fourthAdvent = christmas.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        // Gdy Boże Narodzenie wypada w niedzielę, tego dnia nie obchodzi się już
+        // 4. Niedzieli Adwentu - przypada ona tydzień wcześniej.
+        val fourthAdvent = if (christmas.dayOfWeek == DayOfWeek.SUNDAY) {
+            christmas.minusWeeks(1)
+        } else {
+            christmas.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        }
         return fourthAdvent.minusWeeks(3)
     }
 
@@ -46,7 +52,7 @@ object LiturgicalCalendarCalc {
         val currentYear = date.year
         val dow = date.dayOfWeek.name.take(3)
 
-        val liturgicalYear = if (date.monthValue <= 1 && date.dayOfMonth < 12) currentYear - 1 else currentYear
+        val liturgicalYear = if (date.monthValue <= 1 && date.dayOfMonth <= 12) currentYear - 1 else currentYear
 
         val easter = EasterCalculator.calculate(currentYear)
         val ashWednesday = easter.minusDays(46)
@@ -80,10 +86,6 @@ object LiturgicalCalendarCalc {
             }
         }
 
-        val sundayCycle = CycleCalculator.calculateSundayCycle(date, LiturgicalSeason.ORDINARY_TIME)
-        val sundayCycleChar = sundayCycle.name.last()
-        val feriaCycleNum = getFeriaCycle(sundayCycleChar)
-
         val season = when {
             date.isEqual(easter.minusDays(3)) || date.isEqual(goodFriday) || date.isEqual(easter.minusDays(1)) -> LiturgicalSeason.TRIDUUM
             !date.isBefore(easter) && date.isBefore(pentecost.plusDays(1)) -> LiturgicalSeason.EASTER
@@ -93,6 +95,10 @@ object LiturgicalCalendarCalc {
             date.isAfter(christmasDate.minusDays(1)) && date.isBefore(baptismOfLordSeason.plusDays(1)) -> LiturgicalSeason.CHRISTMAS
             else -> LiturgicalSeason.ORDINARY_TIME
         }
+
+        val sundayCycle = CycleCalculator.calculateSundayCycle(date, season)
+        val sundayCycleChar = sundayCycle.name.last()
+        val feriaCycleNum = getFeriaCycle(sundayCycleChar)
 
         var feastName: String? = null
         var isSolemnity = false
@@ -109,7 +115,14 @@ object LiturgicalCalendarCalc {
             else -> "g"
         }
 
-        
+        // Niedziela Gaudete (3. Adwentu) i Niedziela Laetare (4. Wielkiego Postu) - kolor różowy
+        val gaudeteSunday = firstAdvent.plusWeeks(2)
+        val laetareSunday = easter.minusDays(21)
+        if (date.isEqual(gaudeteSunday) || date.isEqual(laetareSunday)) {
+            colorCode = "p"
+        }
+
+
         if (date.month == Month.DECEMBER && date.dayOfMonth == 24) {
             feastKey = "CHRISTMAS_EVE"
             colorCode = "w"
@@ -174,21 +187,10 @@ object LiturgicalCalendarCalc {
                 } else if (season == LiturgicalSeason.CHRISTMAS) {
                     feastName = "Niedziela w Okresie Narodzenia Pańskiego"
                 } else if (season == LiturgicalSeason.ORDINARY_TIME) {
-                    var baseDate: LocalDate
-                    var weekOffset: Int
-                    if (date.isBefore(ashWednesday)) {
-                        baseDate = baptismOfLord.plusDays(1)
-                        weekOffset = 2
-                    } else {
-                        baseDate = pentecost.plusDays(1)
-                        weekOffset = 9
-                    }
-                    val daysFromBase = ChronoUnit.DAYS.between(baseDate, date)
-                    var weekNum = (daysFromBase / 7).toInt() + weekOffset
-                    if (weekNum > 34) weekNum = 34
-                    if (weekNum == 1) weekNum = 2
-
-                    feastName = if (weekNum in 1..34) "$weekNum. Niedziela Zwykła" else "Niedziela Zwykła"
+                    // Numer tygodnia bierzemy z już obliczonego lectionaryKey, żeby nazwa
+                    // niedzieli zawsze zgadzała się z faktycznie pobranymi czytaniami.
+                    val weekNum = lectionaryKey?.removePrefix("ORD_SUN_")?.substringBefore("_")?.toIntOrNull()
+                    feastName = if (weekNum != null) "$weekNum. Niedziela Zwykła" else "Niedziela Zwykła"
                 }
             }
             else if (date.dayOfWeek != DayOfWeek.SUNDAY) {
@@ -214,15 +216,11 @@ object LiturgicalCalendarCalc {
                     else if (date.isEqual(easter.minusDays(2))) feastName = "Wielki Piątek: Męki Pańskiej"
                     else if (date.isEqual(easter.minusDays(1))) feastName = "Wielka Sobota"
                 } else if (season == LiturgicalSeason.LENT) {
-                    
                     val daysToEaster = ChronoUnit.DAYS.between(date, easter)
                     val daysFromAsh = ChronoUnit.DAYS.between(ashWednesday, date)
                     val weekNum = (daysFromAsh / 7).toInt() + 1
 
-                    println("DEBUG_LENT: Data=$date, Wielkanoc=$easter, DniDoWielkanocy=$daysToEaster, NumerTygodnia=$weekNum")
-
                     if (daysToEaster in 1..7) {
-                        println("DEBUG_LENT: Wykryto Wielki Tydzień dla $date")
                         val holyDayName = when(dow) {
                             "MON" -> "Wielki Poniedziałek"
                             "TUE" -> "Wielki Wtorek"
@@ -233,10 +231,8 @@ object LiturgicalCalendarCalc {
                         }
                         feastName = holyDayName
                     } else {
-                        println("DEBUG_LENT: Wykryto ZWYKŁY tydzień postu dla $date")
                         feastName = "${getPolishDayName(dow)} $weekNum. Tygodnia Wielkiego Postu"
                     }
-                    
                 } else if (season == LiturgicalSeason.EASTER) {
                     val daysFromEaster = ChronoUnit.DAYS.between(easter, date)
                     val weekNum = (daysFromEaster / 7).toInt() + 1

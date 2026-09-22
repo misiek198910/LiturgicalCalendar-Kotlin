@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import mivs.liturgicalcalendar.billing.SubscriptionManager
-import mivs.liturgicalcalendar.billing.SubscriptionStatus
 import mivs.liturgicalcalendar.data.repository.CalendarRepository
 import mivs.liturgicalcalendar.domain.model.LiturgicalDay
 import mivs.liturgicalcalendar.ui.common.LiturgicalToEventMapper
@@ -19,33 +18,21 @@ class CalendarViewModel(
     private val repository: CalendarRepository,
     private val subscriptionManager: SubscriptionManager) : ViewModel() {
 
-    private var adShownOnExit = false
-    var isInternalNavigation = false
-
     fun triggerExitAd(onShowAd: () -> Unit) {
         // Reklama tylko dla darmowych użytkowników
         if (_isPremium.value == false) {
-            adShownOnExit = true
             onShowAd()
         }
     }
 
-    fun triggerResumeAd(onShowAd: () -> Unit) {
-        if (_isPremium.value == false && !adShownOnExit && !isInternalNavigation) {
-            onShowAd()
-        }
-        // Zawsze resetujemy flagi
-        adShownOnExit = false
-        isInternalNavigation = false
-    }
     private val _events = MutableStateFlow<List<EventDay>>(emptyList())
     val events: StateFlow<List<EventDay>> = _events
     private val _isPremium = MutableStateFlow(false)
     val isPremium: StateFlow<Boolean> = _isPremium
 
     init {
-        subscriptionManager.subscriptionStatus.observeForever { status ->
-            _isPremium.value = (status == SubscriptionStatus.PREMIUM)
+        subscriptionManager.isPremium.observeForever { premium ->
+            _isPremium.value = premium
         }
     }
 

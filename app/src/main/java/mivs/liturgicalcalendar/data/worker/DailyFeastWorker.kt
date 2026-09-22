@@ -51,7 +51,7 @@ class DailyFeastWorker(
     }
 
     private fun sendNotification(title: String, message: String) {
-        val channelId = "daily_word_channel"
+        val channelId = "daily_word_channel_urgent"
 
         
         if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -72,8 +72,8 @@ class DailyFeastWorker(
             .setSmallIcon(R.drawable.ic_notifications) 
             .setContentTitle(title)
             .setContentText(message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) 
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
@@ -86,9 +86,10 @@ class DailyFeastWorker(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Codzienne Słowo"
             val descriptionText = "Powiadomienia o patronie dnia i Ewangelii"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
+                enableVibration(true)
             }
             val notificationManager: NotificationManager =
                 applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

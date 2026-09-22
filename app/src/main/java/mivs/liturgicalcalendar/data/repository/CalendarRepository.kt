@@ -9,6 +9,7 @@ import mivs.liturgicalcalendar.data.db.AppDatabase
 import mivs.liturgicalcalendar.domain.logic.LiturgicalCalendarCalc
 import mivs.liturgicalcalendar.domain.model.LiturgicalDay
 import mivs.liturgicalcalendar.domain.model.LiturgicalSeason
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 class CalendarRepository(context: Context) {
@@ -222,46 +223,29 @@ class CalendarRepository(context: Context) {
     
     private fun shouldOverwrite(day: LiturgicalDay, fixedRank: Int): Boolean {
 
-        
-        if (day.feastKey != null) {
-            val isOverwritableKey = day.feastKey == "EPIPHANY"
-            
-            if (!isOverwritableKey) return false
-        }
+        // Uroczystości ruchome (Wielkanoc, Zesłanie Ducha Świętego, Chrystus Król, Chrzest Pański itd.)
+        // nigdy nie są zastępowane świętem z kalendarza stałego.
+        if (day.feastKey != null) return false
 
-        
-
-        
-        
         if (day.season == LiturgicalSeason.TRIDUUM) return false
         if (day.season == LiturgicalSeason.LENT && day.lectionaryKey?.contains("LENT_W6") == true) return false
         if (day.season == LiturgicalSeason.LENT && day.lectionaryKey?.contains("HOLY_WEEK") == true) return false
-
-        
-        
         if (day.season == LiturgicalSeason.EASTER && day.lectionaryKey?.contains("EASTER_W1") == true) return false
 
-        
-        
+        // Każda niedziela (Adwentu, Wielkiego Postu, Wielkanocy, Zwykła, Narodzenia Pańskiego)
+        // ustępuje tylko uroczystości (ranga 3+), nigdy zwykłemu świętu czy wspomnieniu.
+        if (day.date.dayOfWeek == DayOfWeek.SUNDAY) {
+            return fixedRank >= 3
+        }
+
         if (day.season == LiturgicalSeason.LENT) {
             return fixedRank >= 3
         }
 
-        
-        if (day.lectionaryKey?.contains("SUN") == true) {
-            if (day.lectionaryKey.contains("ADVENT") ||
-                day.lectionaryKey.contains("LENT") ||
-                day.lectionaryKey.contains("EASTER")) {
-                return false
-            }
-        }
-
-        
         if (day.season == LiturgicalSeason.CHRISTMAS) {
             return true
         }
 
-        
         return fixedRank >= 1
     }
 

@@ -1,5 +1,6 @@
 package mivs.liturgicalcalendar.ui.details
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,10 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import mivs.liturgicalcalendar.R
+
+interface OnReadingsBottomSheetClosedListener {
+    fun onReadingsBottomSheetClosed()
+}
 
 class ReadingsBottomSheet : BottomSheetDialogFragment() {
 
@@ -56,6 +61,11 @@ class ReadingsBottomSheet : BottomSheetDialogFragment() {
             @Suppress("DEPRECATION")
             window.navigationBarColor = android.graphics.Color.BLACK
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        (activity as? OnReadingsBottomSheetClosedListener)?.onReadingsBottomSheetClosed()
     }
 
     companion object {

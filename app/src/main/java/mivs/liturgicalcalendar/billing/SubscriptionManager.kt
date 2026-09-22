@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import com.android.billingclient.api.ProductDetails
 
 class SubscriptionManager private constructor(context: Context) {
-    
+
     val billingManager: BillingManager = BillingManager.getInstance(context)
 
     val isPremium: LiveData<Boolean> = billingManager.isPremium
-    val subscriptionStatus: LiveData<SubscriptionStatus> = billingManager.subscriptionStatus
+    val subscriptionStatus: LiveData<BillingManager.SubscriptionStatus> = billingManager.subscriptionStatus
     val productDetails: LiveData<ProductDetails?> = billingManager.productDetails
+
     val isPremiumValue: Boolean
         get() = billingManager.isPremium.value ?: false
 

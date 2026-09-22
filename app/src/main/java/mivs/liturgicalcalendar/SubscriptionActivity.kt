@@ -115,20 +115,25 @@ class SubscriptionActivity : AppCompatActivity(), BillingManager.BillingManagerL
 
         subscriptionManager.subscriptionStatus.observe(this) { status ->
             when (status) {
-                SubscriptionStatus.PREMIUM -> {
+                BillingManager.SubscriptionStatus.PREMIUM -> {
                     tvStatus.text = getString(R.string.subs_status_active)
                     tvStatus.setTextColor(getColor(android.R.color.holo_green_light))
-                    btnYearly.isEnabled = false
-                    btnMonthly.isEnabled = false
+                    btnYearly.visibility = View.GONE
+                    btnMonthly.visibility = View.GONE
                 }
-                SubscriptionStatus.NON_PREMIUM -> {
+                BillingManager.SubscriptionStatus.NON_PREMIUM -> {
                     tvStatus.text = getString(R.string.subs_status_none)
                     tvStatus.setTextColor(getColor(android.R.color.white))
                     btnYearly.isEnabled = true
                     btnMonthly.isEnabled = true
+                    btnYearly.visibility = View.VISIBLE
+                    btnMonthly.visibility = View.VISIBLE
                 }
-                SubscriptionStatus.CHECKING -> {
+                BillingManager.SubscriptionStatus.CHECKING -> {
                     tvStatus.text = getString(R.string.subs_status_checking)
+                }
+                null -> {
+                    // Opcjonalnie obsługa pustego statusu
                 }
             }
         }

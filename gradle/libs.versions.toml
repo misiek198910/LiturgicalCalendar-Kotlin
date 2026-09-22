@@ -16,13 +16,14 @@ room = "2.6.1"
 jsoup = "1.17.2"
 play_services_ads = "23.6.0"
 user_messaging_platform = "3.1.0"
-billing = "7.1.1"
+billing = "9.1.0"
 work-version = "2.9.0"
 bom = "33.7.0"
 googleGmsGoogleServices = "4.4.2"
 glide = "4.16.0"
 retrofit = "2.9.0"
 gson = "2.10.1"
+glance = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,8 +59,13 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 # Glide do zdjęć
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
+# Glance (widgety na ekran główny)
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 

@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     id("kotlin-kapt")
 }
@@ -23,8 +24,8 @@ android {
         applicationId = "mivs.kalendarz_liturgiczny"
         minSdk = 27
         targetSdk = 36
-        versionCode = 46
-        versionName = "2.1.5"
+        versionCode = 48
+        versionName = "2.1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -72,6 +73,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        compose = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -111,4 +113,7 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 }
